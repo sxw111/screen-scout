@@ -39,7 +39,7 @@ async def create(*, db_session: AsyncSession, genre_in: GenreCreate) -> Genre:
 async def update(
     *, db_session: AsyncSession, genre: Genre, genre_in: GenreUpdate
 ) -> Genre:
-    """Updates a genre type."""
+    """Updates a genre."""
     genre_data = genre.dict()
     update_data = genre_in.model_dump(skip_defaults=True)
     for field in genre_data:

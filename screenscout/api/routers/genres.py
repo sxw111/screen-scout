@@ -5,7 +5,7 @@ from screenscout.schemas.genre import GenreCreate, GenreRead, GenreUpdate
 from screenscout.crud.genre import get, get_all, create, update, delete, get_by_name
 
 
-router = APIRouter
+router = APIRouter()
 
 
 @router.get("/", response_model=list[GenreRead])

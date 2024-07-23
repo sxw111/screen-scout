@@ -11,8 +11,15 @@ from screenscout.api.routers.persons import router as persons_router
 api_router = APIRouter()
 
 api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
-api_router.include_router(career_roles_router, prefix="/career_roles", tags=["career_roles"])
+api_router.include_router(
+    career_roles_router, prefix="/career_roles", tags=["career_roles"]
+)
 api_router.include_router(countries_router, prefix="/countries", tags=["countries"])
 api_router.include_router(genres_router, prefix="/genres", tags=["genres"])
 api_router.include_router(movies_router, prefix="/movies", tags=["movies"])
 api_router.include_router(persons_router, prefix="/persons", tags=["persons"])
+
+
+@api_router.get("/healthcheck", include_in_schema=False)
+def healthcheck():
+    return {"status": "ok"}
