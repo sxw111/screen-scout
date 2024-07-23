@@ -52,7 +52,7 @@ async def update_country(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Country with id `{country_id}` does not exist.",
         )
-    country = update(db_session=db_session, country=country, country_in=country_in)
+    country = await update(db_session=db_session, country=country, country_in=country_in)
 
     return country
 

@@ -50,7 +50,7 @@ async def update_career_role(db_session: SessionDep, career_role_id: int, career
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Career_role with id `{career_role_id}` does not exist.",
         )
-    career_role = update(db_session=db_session, career_role=career_role, career_role_in=career_role_in)
+    career_role = await update(db_session=db_session, career_role=career_role, career_role_in=career_role_in)
 
     return career_role
 

@@ -50,7 +50,7 @@ async def update_genre(db_session: SessionDep, genre_id: int, genre_in: GenreUpd
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Genre with id `{genre_id}` does not exist.",
         )
-    genre = update(db_session=db_session, genre=genre, genre_in=genre_in)
+    genre = await update(db_session=db_session, genre=genre, genre_in=genre_in)
 
     return genre
 
