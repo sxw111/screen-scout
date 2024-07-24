@@ -22,6 +22,7 @@ async def get_movie(db_session: SessionDep, movie_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Movie with id `{movie_id}` does not exist.",
         )
+
     return movie
 
 

@@ -1,8 +1,19 @@
 from fastapi import APIRouter, HTTPException, status
 
 from screenscout.api.deps import SessionDep
-from screenscout.schemas.career_role import CareerRoleCreate, CareerRoleRead, CareerRoleUpdate
-from screenscout.crud.career_role import get, get_all, create, update, delete, get_by_name
+from screenscout.schemas.career_role import (
+    CareerRoleCreate,
+    CareerRoleRead,
+    CareerRoleUpdate,
+)
+from screenscout.crud.career_role import (
+    get,
+    get_all,
+    create,
+    update,
+    delete,
+    get_by_name,
+)
 
 
 router = APIRouter()
@@ -23,6 +34,7 @@ async def get_career_role(db_session: SessionDep, career_role_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Career role with id `{career_role_id}` does not exist.",
         )
+
     return career_role
 
 
@@ -42,7 +54,9 @@ async def create_career_role(db_session: SessionDep, career_role_in: CareerRoleC
 
 
 @router.put("/{career_role_id}", response_model=CareerRoleRead)
-async def update_career_role(db_session: SessionDep, career_role_id: int, career_role_in: CareerRoleUpdate):
+async def update_career_role(
+    db_session: SessionDep, career_role_id: int, career_role_in: CareerRoleUpdate
+):
     """Update a career role."""
     career_role = await get(db_session=db_session, career_role_id=career_role_id)
     if not career_role:
@@ -50,7 +64,9 @@ async def update_career_role(db_session: SessionDep, career_role_id: int, career
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Career_role with id `{career_role_id}` does not exist.",
         )
-    career_role = await update(db_session=db_session, career_role=career_role, career_role_in=career_role_in)
+    career_role = await update(
+        db_session=db_session, career_role=career_role, career_role_in=career_role_in
+    )
 
     return career_role
 

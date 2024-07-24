@@ -23,6 +23,7 @@ async def get_genre(db_session: SessionDep, genre_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Genre with id `{genre_id}` does not exist.",
         )
+
     return genre
 
 

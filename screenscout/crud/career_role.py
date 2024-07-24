@@ -7,7 +7,9 @@ from screenscout.schemas.career_role import CareerRoleCreate, CareerRoleUpdate
 
 async def get(*, db_session: AsyncSession, career_role_id: int) -> CareerRole | None:
     """Returns a career role based on the given id."""
-    result = await db_session.execute(select(CareerRole).where(CareerRole.id == career_role_id))
+    result = await db_session.execute(
+        select(CareerRole).where(CareerRole.id == career_role_id)
+    )
 
     return result.scalars().first()
 
@@ -26,7 +28,9 @@ async def get_all(*, db_session: AsyncSession) -> list[CareerRole | None]:
     return result.scalars().all()
 
 
-async def create(*, db_session: AsyncSession, career_role_in: CareerRoleCreate) -> CareerRole:
+async def create(
+    *, db_session: AsyncSession, career_role_in: CareerRoleCreate
+) -> CareerRole:
     """Creates a new career role."""
     career_role = CareerRole(**career_role_in.model_dump())
     db_session.add(career_role)
@@ -37,7 +41,10 @@ async def create(*, db_session: AsyncSession, career_role_in: CareerRoleCreate) 
 
 
 async def update(
-    *, db_session: AsyncSession, career_role: CareerRole, career_role_in: CareerRoleUpdate
+    *,
+    db_session: AsyncSession,
+    career_role: CareerRole,
+    career_role_in: CareerRoleUpdate
 ) -> CareerRole:
     """Updates a career role."""
     career_role_data = career_role.dict()
@@ -54,7 +61,9 @@ async def update(
 
 async def delete(*, db_session: AsyncSession, career_role_id: int):
     """Deletes an existing career role."""
-    result = await db_session.execute(select(CareerRole).where(CareerRole.id == career_role_id))
+    result = await db_session.execute(
+        select(CareerRole).where(CareerRole.id == career_role_id)
+    )
     career_role = result.scalars().first()
     await db_session.delete(career_role)
     await db_session.commit()
