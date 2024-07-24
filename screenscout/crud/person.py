@@ -49,7 +49,9 @@ async def create(*, db_session: AsyncSession, person_in: PersonCreate) -> Person
     return person
 
 
-async def update(*, db_session: AsyncSession, person: Person, person_in: PersonUpdate) -> Person:
+async def update(
+    *, db_session: AsyncSession, person: Person, person_in: PersonUpdate
+) -> Person:
     """Updates a person."""
     person_data = person.dict()
     update_data = person_in.model_dump(skip_defaults=True)
@@ -59,11 +61,13 @@ async def update(*, db_session: AsyncSession, person: Person, person_in: PersonU
 
     if person_in.career is not None:
         person.career.clear()
-        for career_id in person_in.career:
-            result = await db_session.execute(select(CareerRole).where(CareerRole.id == career_id))
-            career = result.scalars().first()
-            if career:
-                person.career.append(career)
+        for career_role_id in person_in.career:
+            result = await db_session.execute(
+                select(CareerRole).where(CareerRole.id == career_role_id)
+            )
+            career_role = result.scalars().first()
+            if career_role:
+                person.career.append(career_role)
 
     if person_in.genres is not None:
         person.genres.clear()
@@ -72,7 +76,6 @@ async def update(*, db_session: AsyncSession, person: Person, person_in: PersonU
             genre = result.scalars().first()
             if genre:
                 person.genres.append(genre)
-    
 
     await db_session.commit()
     await db_session.refresh(person)

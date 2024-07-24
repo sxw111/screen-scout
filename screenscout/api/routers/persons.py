@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from screenscout.api.deps import SessionDep
 from screenscout.schemas.person import PersonCreate, PersonRead, PersonUpdate
-from screenscout.crud.person import get, get_all, create, update, delete, get_by_name
+from screenscout.crud.person import get, get_all, create, update, delete
 
 
 router = APIRouter()
