@@ -1,14 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class GenreCreate(BaseModel):
+class GenreBase(BaseModel):
     name: str
 
 
-class GenreRead(BaseModel):
+class GenreCreate(GenreBase):
+    pass
+
+
+class GenreUpdate(GenreBase):
+    pass
+
+
+class GenreRead(GenreBase):
     id: int
-    name: str
-
-
-class GenreUpdate(BaseModel):
-    name: str

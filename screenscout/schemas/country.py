@@ -1,14 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class CountryCreate(BaseModel):
+class CountryBase(BaseModel):
     name: str
 
 
-class CountryRead(BaseModel):
+class CountryCreate(CountryBase):
+    pass
+
+
+class CountryUpdate(CountryBase):
+    pass
+
+
+class CountryRead(CountryBase):
     id: int
-    name: str
-
-
-class CountryUpdate(BaseModel):
-    name: str

@@ -28,7 +28,7 @@ class Movie(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(unique=False, nullable=False)
-    release_date: Mapped[date] = mapped_column(unique=False, nullable=False)
+    production_year: Mapped[date] = mapped_column(unique=False, nullable=False)
     country: Mapped[list["Country"]] = relationship(secondary=movie_country_association)
     genres: Mapped[list["Genre"]] = relationship(secondary=movie_genre_association)
     rating: Mapped[float] = mapped_column(DECIMAL(3, 1), unique=False, nullable=False)

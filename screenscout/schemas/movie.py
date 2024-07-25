@@ -8,7 +8,7 @@ from screenscout.schemas.country import CountryRead
 
 class MovieBase(BaseModel):
     title: str
-    release_date: date
+    production_year: date
     rating: float
     description: str
     director_id: int
@@ -21,10 +21,9 @@ class MovieBase(BaseModel):
 class MovieCreate(MovieBase):
     country: list[int] | None = Field(default_factory=list)
     genres: list[int] | None = Field(default_factory=list)
-    director_id: int
 
 
-class MovieUpdate(BaseModel):
+class MovieUpdate(MovieBase):
     title: str | None = None
     release_date: date | None = None
     rating: float | None = None
@@ -42,4 +41,3 @@ class MovieRead(MovieBase):
     id: int
     country: list[CountryRead]
     genres: list[GenreRead]
-    director_id: int

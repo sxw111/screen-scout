@@ -1,14 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class CareerRoleCreate(BaseModel):
+class CareerRoleBase(BaseModel):
     name: str
 
 
-class CareerRoleRead(BaseModel):
+class CareerRoleCreate(CareerRoleBase):
+    pass
+
+
+class CareerRoleUpdate(CareerRoleCreate):
+    pass
+
+
+class CareerRoleRead(CareerRoleCreate):
     id: int
-    name: str
-
-
-class CareerRoleUpdate(BaseModel):
-    name: str
