@@ -41,7 +41,7 @@ async def update(
 ) -> Genre:
     """Updates a genre."""
     genre_data = genre.dict()
-    update_data = genre_in.model_dump(skip_defaults=True)
+    update_data = genre_in.model_dump(exclude_unset=True)
     for field in genre_data:
         if field in update_data:
             setattr(genre, field, update_data[field])

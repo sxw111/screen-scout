@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from screenscout.schemas.career_role import CareerRoleRead
 from screenscout.schemas.genre import GenreRead
@@ -9,20 +9,21 @@ from screenscout.schemas.genre import GenreRead
 class PersonBase(BaseModel):
     name: str
     height: int | None = None
-    birthday: datetime | None = None
+    birthday: date | None = None
 
 
 class PersonCreate(PersonBase):
-    career: list[int] | None = []
-    genres: list[int] | None = []
+    career_roles: list[int] | None = Field(default_factory=list)
+    genres: list[int] | None = Field(default_factory=list)
 
 
 class PersonUpdate(PersonBase):
-    career: list[int] | None = []
-    genres: list[int] | None = []
+    career_roles: list[int] | None = Field(default_factory=list)
+    genres: list[int] | None = Field(default_factory=list)
 
 
 class PersonRead(PersonBase):
     id: int
-    career: list[CareerRoleRead]
+    career_roles: list[CareerRoleRead]
     genres: list[GenreRead]
+    

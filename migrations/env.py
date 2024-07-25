@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from screenscout.core.config import settings
 from screenscout.core.db import Base
-from screenscout.models import genre
+from screenscout.models import career_role, country, genre, movie, person
 
 
 # this is the Alembic Config object, which provides

@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, date
 
-from sqlalchemy import TIMESTAMP, ForeignKey, Column, Table, func
+from sqlalchemy import TIMESTAMP, ForeignKey, Column, Table, func, DATE
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from screenscout.core.db import Base
@@ -31,12 +31,11 @@ class Person(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=False, nullable=False)
     height: Mapped[int] = mapped_column(unique=False, nullable=True)
-    birthday: Mapped[datetime] = mapped_column(TIMESTAMP, unique=False, nullable=True)
-    career: Mapped[list["CareerRole"]] = relationship(
+    birthday: Mapped[date] = mapped_column(DATE, unique=False, nullable=True)
+    career_roles: Mapped[list["CareerRole"]] = relationship(
         secondary=person_career_role_association
     )
     genres: Mapped[list["Genre"]] = relationship(secondary=person_genre_association)
-    movies: Mapped[list["Movie"]] = relationship()
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )

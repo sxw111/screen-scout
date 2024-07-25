@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, Field
 
 from screenscout.schemas.genre import GenreRead
 from screenscout.schemas.country import CountryRead
@@ -14,13 +14,13 @@ class MovieBase(BaseModel):
     director_id: int
     age_category: str
     duration: int
-    poster_url: HttpUrl | None = None
-    trailer_url: HttpUrl | None = None
+    poster_url: str
+    trailer_url: str
 
 
 class MovieCreate(MovieBase):
-    country: list[int]
-    genres: list[int]
+    country: list[int] | None = Field(default_factory=list)
+    genres: list[int] | None = Field(default_factory=list)
     director_id: int
 
 
@@ -31,10 +31,10 @@ class MovieUpdate(BaseModel):
     description: str | None = None
     age_category: str | None = None
     duration: int | None = None
-    poster_url: HttpUrl | None = None
-    trailer_url: HttpUrl | None = None
-    country: list[int] | None = None
-    genres: list[int] | None = None
+    poster_url: str | None = None
+    trailer_url: str | None = None
+    country: list[int] | None = Field(default_factory=list)
+    genres: list[int] | None = Field(default_factory=list)
     director_id: int | None = None
 
 

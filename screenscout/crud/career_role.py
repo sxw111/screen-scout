@@ -48,7 +48,7 @@ async def update(
 ) -> CareerRole:
     """Updates a career role."""
     career_role_data = career_role.dict()
-    update_data = career_role_in.model_dump(skip_defaults=True)
+    update_data = career_role_in.model_dump(exclude_unset=True)
     for field in career_role_data:
         if field in update_data:
             setattr(career_role, field, update_data[field])

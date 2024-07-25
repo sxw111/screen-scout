@@ -41,7 +41,7 @@ async def update(
 ) -> Country:
     """Updates a country."""
     country_data = country.dict()
-    update_data = country_in.model_dump(skip_defaults=True)
+    update_data = country_in.model_dump(exclude_unset=True)
     for field in country_data:
         if field in update_data:
             setattr(country, field, update_data[field])

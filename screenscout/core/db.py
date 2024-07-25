@@ -4,12 +4,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 from screenscout.core.config import settings
 
-DATABASE_URL = (
-    "postgresql+asyncpg://"
-    f"{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@"
-    f"{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/"
-    f"{settings.POSTGRES_DB}"
-)
+DATABASE_URL = str(settings.DATABASE_URL)
 
 async_engine = create_async_engine(DATABASE_URL, echo=True)
 
@@ -37,3 +32,7 @@ class Base(DeclarativeBase):
             "pk": "pk_%(table_name)s",
         }
     )
+
+    def dict(self):
+        """Returns a dict representation of a model."""
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
