@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 

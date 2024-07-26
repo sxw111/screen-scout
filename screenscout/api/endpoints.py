@@ -6,7 +6,7 @@ from screenscout.api.routers.countries import router as countries_router
 from screenscout.api.routers.genres import router as genres_router
 from screenscout.api.routers.movies import router as movies_router
 from screenscout.api.routers.persons import router as persons_router
-
+from screenscout.api.routers.languages import router as languages_router
 
 api_router = APIRouter()
 
@@ -18,6 +18,7 @@ api_router.include_router(countries_router, prefix="/countries", tags=["countrie
 api_router.include_router(genres_router, prefix="/genres", tags=["genres"])
 api_router.include_router(movies_router, prefix="/movies", tags=["movies"])
 api_router.include_router(persons_router, prefix="/persons", tags=["persons"])
+api_router.include_router(languages_router, prefix="/languages", tags=["languages"])
 
 
 @api_router.get("/healthcheck", include_in_schema=False)

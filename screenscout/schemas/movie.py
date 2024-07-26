@@ -16,6 +16,8 @@ class MovieBase(BaseModel):
     duration: int
     poster_url: str
     trailer_url: str
+    budget: int
+    box_office: int
 
 
 class MovieCreate(MovieBase):
@@ -26,7 +28,7 @@ class MovieCreate(MovieBase):
 class MovieUpdate(MovieBase):
     title: str | None = None
     release_date: date | None = None
-    rating: float | None = None
+    IMDb_rating: float | None = None
     description: str | None = None
     age_category: str | None = None
     duration: int | None = None
@@ -35,6 +37,8 @@ class MovieUpdate(MovieBase):
     country: list[int] | None = Field(default_factory=list)
     genres: list[int] | None = Field(default_factory=list)
     director_id: int | None = None
+    budget: int | None = None
+    box_office: int | None = None
 
 
 class MovieRead(MovieBase):

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 
 from screenscout.api.deps import SessionDep
+from screenscout.crud.movie import create, delete, get, get_all, update
 from screenscout.schemas.movie import MovieCreate, MovieRead, MovieUpdate
-from screenscout.crud.movie import get, get_all, create, update, delete
+
 
 router = APIRouter()
 

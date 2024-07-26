@@ -1,10 +1,9 @@
-from datetime import datetime, date
+from datetime import date
 
-from sqlalchemy import TIMESTAMP, ForeignKey, Column, Table, func, DATE
+from sqlalchemy import ForeignKey, Column, Table, DATE
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from screenscout.core.db import Base
-from screenscout.models.movie import Movie
 from screenscout.models.career_role import CareerRole
 from screenscout.models.genre import Genre
 
@@ -36,12 +35,3 @@ class Person(Base):
         secondary=person_career_role_association
     )
     genres: Mapped[list["Genre"]] = relationship(secondary=person_genre_association)
-    created_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP(timezone=True),
-        nullable=False,
-        server_default=func.now(),
-        onupdate=func.now(),
-    )

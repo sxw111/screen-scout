@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 from screenscout.api.deps import SessionDep
+from screenscout.crud.genre import create, delete, get, get_all, get_by_name, update
 from screenscout.schemas.genre import GenreCreate, GenreRead, GenreUpdate
-from screenscout.crud.genre import get, get_all, create, update, delete, get_by_name
 
 
 router = APIRouter()
