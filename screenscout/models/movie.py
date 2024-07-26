@@ -42,14 +42,14 @@ class Movie(Base):
         secondary=movie_language_association
     )
     genres: Mapped[list["Genre"]] = relationship(secondary=movie_genre_association)
+    director_id: Mapped[int] = mapped_column(ForeignKey("persons.id"))
+    budget: Mapped[int] = mapped_column(unique=False, nullable=True)
+    box_office: Mapped[int] = mapped_column(unique=False, nullable=True)
     IMDb_rating: Mapped[float] = mapped_column(
         DECIMAL(3, 1), unique=False, nullable=False
     )
     description: Mapped[str] = mapped_column(Text, unique=False, nullable=False)
-    director_id: Mapped[int] = mapped_column(ForeignKey("persons.id"))
     age_category: Mapped[str] = mapped_column(unique=False, nullable=False)
     duration: Mapped[int] = mapped_column(unique=False, nullable=False)
     poster_url: Mapped[str] = mapped_column(unique=True, nullable=True)
     trailer_url: Mapped[str] = mapped_column(unique=True, nullable=True)
-    budget: Mapped[int] = mapped_column(unique=False, nullable=True)
-    box_office: Mapped[int] = mapped_column(unique=False, nullable=True)

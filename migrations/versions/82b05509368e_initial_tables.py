@@ -1,8 +1,8 @@
 """Initial tables
 
-Revision ID: cf1668f5f8df
+Revision ID: 82b05509368e
 Revises: 
-Create Date: 2024-07-26 03:20:48.050751
+Create Date: 2024-07-26 03:42:13.336428
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'cf1668f5f8df'
+revision: str = '82b05509368e'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -55,15 +55,15 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
     sa.Column('production_year', sa.Date(), nullable=False),
+    sa.Column('director_id', sa.Integer(), nullable=False),
+    sa.Column('budget', sa.Integer(), nullable=True),
+    sa.Column('box_office', sa.Integer(), nullable=True),
     sa.Column('IMDb_rating', sa.DECIMAL(precision=3, scale=1), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('director_id', sa.Integer(), nullable=False),
     sa.Column('age_category', sa.String(), nullable=False),
     sa.Column('duration', sa.Integer(), nullable=False),
     sa.Column('poster_url', sa.String(), nullable=True),
     sa.Column('trailer_url', sa.String(), nullable=True),
-    sa.Column('budget', sa.Integer(), nullable=True),
-    sa.Column('box_office', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['director_id'], ['persons.id'], name=op.f('fk_movies_director_id_persons')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_movies')),
     sa.UniqueConstraint('poster_url', name=op.f('uq_movies_poster_url')),
