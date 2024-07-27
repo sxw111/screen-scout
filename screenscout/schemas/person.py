@@ -26,3 +26,8 @@ class PersonRead(PersonBase):
     id: int
     career_roles: list[CareerRoleRead]
     genres: list[GenreRead]
+
+
+class PersonSeriesDirectorRead(BaseModel):
+    id: int
+    name: str

@@ -5,6 +5,7 @@ from sqlalchemy.orm import selectinload
 from screenscout.models.movie import Movie
 from screenscout.models.country import Country
 from screenscout.models.genre import Genre
+from screenscout.models.language import Language
 from screenscout.schemas.movie import MovieCreate, MovieUpdate
 
 
@@ -35,26 +36,36 @@ async def create(*, db_session: AsyncSession, movie_in: MovieCreate):
     movie_data = movie_in.model_dump()
     country = movie_data.pop("country")
     genres = movie_data.pop("genres")
+    languages = movie_data.pop("language")
     movie = Movie(**movie_data)
     db_session.add(movie)
     await db_session.commit()
-    await db_session.refresh(movie, ["country", "genres"])
+    await db_session.refresh(movie, ["country", "genres", "language"])
 
     for country_id in country:
         result = await db_session.execute(
             select(Country).where(Country.id == country_id)
         )
         country = result.scalars().first()
-        if country is not None:
+        if country:
             db_session.add(country)
         movie.country.append(country)
 
     for genre_id in genres:
         result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
         genre = result.scalars().first()
-        if genre is not None:
+        if genre:
             db_session.add(genre)
         movie.genres.append(genre)
+
+    for language_id in languages:
+        result = await db_session.execute(
+            select(Language).where(Language.id == language_id)
+        )
+        language = result.scalars().first()
+        if language:
+            db_session.add(language)
+        movie.language.append(language)
 
     await db_session.commit()
 
@@ -86,6 +97,16 @@ async def update(*, db_session: AsyncSession, movie: Movie, movie_in: MovieUpdat
             genre = result.scalars().first()
             if genre:
                 movie.genres.append(genre)
+
+    if movie_in.language is not None:
+        movie.language.clear()
+        for language_id in movie_in.language:
+            result = await db_session.execute(
+                select(Language).where(Language.id == language_id)
+            )
+            language = result.scalars().first()
+            if language:
+                movie.language.append(language)
 
     await db_session.commit()
     await db_session.refresh(movie)

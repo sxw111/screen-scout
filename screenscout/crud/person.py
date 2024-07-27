@@ -45,14 +45,14 @@ async def create(*, db_session: AsyncSession, person_in: PersonCreate) -> Person
             select(CareerRole).where(CareerRole.id == career_role_id)
         )
         career_role = result.scalars().first()
-        if career_role is not None:
+        if career_role:
             db_session.add(career_role)
         person.career_roles.append(career_role)
 
     for genre_id in genres:
         result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
         genre = result.scalars().first()
-        if genre is not None:
+        if genre:
             db_session.add(genre)
         person.genres.append(genre)
 

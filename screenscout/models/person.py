@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from screenscout.core.db import Base
 from screenscout.models.career_role import CareerRole
 from screenscout.models.genre import Genre
+from screenscout.models.movie import Movie
 
 
 person_genre_association = Table(
@@ -30,6 +31,7 @@ class Person(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=False, nullable=False)
     height: Mapped[int] = mapped_column(unique=False, nullable=True)
+    directed_movies: Mapped[list[Movie]] = relationship()
     birthday: Mapped[date] = mapped_column(DATE, unique=False, nullable=True)
     career_roles: Mapped[list["CareerRole"]] = relationship(
         secondary=person_career_role_association
