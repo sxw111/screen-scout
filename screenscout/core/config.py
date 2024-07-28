@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DATABASE_URL: PostgresDsn
 
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+
     IS_ALLOWED_CREDENTIALS: bool = True
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",

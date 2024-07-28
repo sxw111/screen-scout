@@ -8,7 +8,7 @@ from screenscout.models.genre import Genre
 from screenscout.schemas.person import PersonCreate, PersonUpdate
 
 
-async def get(*, db_session: AsyncSession, person_id: int) -> Person:
+async def get(*, db_session: AsyncSession, person_id: int) -> Person | None:
     """Returns a person based on the given id."""
     query = (
         select(Person)

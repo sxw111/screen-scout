@@ -1,8 +1,8 @@
 """Initial tables
 
-Revision ID: 82b05509368e
+Revision ID: f995f0296fbd
 Revises: 
-Create Date: 2024-07-26 03:42:13.336428
+Create Date: 2024-07-29 01:17:27.984152
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '82b05509368e'
+revision: str = 'f995f0296fbd'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -51,6 +51,33 @@ def upgrade() -> None:
     sa.Column('birthday', sa.DATE(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_persons'))
     )
+    op.create_table('series',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('production_year', sa.Date(), nullable=False),
+    sa.Column('seasons_count', sa.Integer(), nullable=False),
+    sa.Column('IMDb_rating', sa.DECIMAL(precision=3, scale=1), nullable=False),
+    sa.Column('description', sa.Text(), nullable=False),
+    sa.Column('age_category', sa.String(), nullable=False),
+    sa.Column('poster_url', sa.String(), nullable=True),
+    sa.Column('trailer_url', sa.String(), nullable=True),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_series')),
+    sa.UniqueConstraint('poster_url', name=op.f('uq_series_poster_url')),
+    sa.UniqueConstraint('trailer_url', name=op.f('uq_series_trailer_url'))
+    )
+    op.create_table('users',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
+    sa.Column('role', sa.Enum('OWNER', 'MANAGER', 'ADMIN', 'MEMBER', name='userrole'), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_users')),
+    sa.UniqueConstraint('email', name=op.f('uq_users_email')),
+    sa.UniqueConstraint('username', name=op.f('uq_users_username'))
+    )
     op.create_table('movies',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
@@ -81,6 +108,30 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['genre_id'], ['genres.id'], name=op.f('fk_person_genre_genre_id_genres')),
     sa.ForeignKeyConstraint(['person_id'], ['persons.id'], name=op.f('fk_person_genre_person_id_persons'))
     )
+    op.create_table('series_country',
+    sa.Column('series_id', sa.Integer(), nullable=True),
+    sa.Column('country_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['country_id'], ['countries.id'], name=op.f('fk_series_country_country_id_countries')),
+    sa.ForeignKeyConstraint(['series_id'], ['series.id'], name=op.f('fk_series_country_series_id_series'))
+    )
+    op.create_table('series_director',
+    sa.Column('series_id', sa.Integer(), nullable=True),
+    sa.Column('director_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['director_id'], ['persons.id'], name=op.f('fk_series_director_director_id_persons')),
+    sa.ForeignKeyConstraint(['series_id'], ['series.id'], name=op.f('fk_series_director_series_id_series'))
+    )
+    op.create_table('series_genre',
+    sa.Column('series_id', sa.Integer(), nullable=True),
+    sa.Column('genre_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['genre_id'], ['genres.id'], name=op.f('fk_series_genre_genre_id_genres')),
+    sa.ForeignKeyConstraint(['series_id'], ['series.id'], name=op.f('fk_series_genre_series_id_series'))
+    )
+    op.create_table('series_language',
+    sa.Column('series_id', sa.Integer(), nullable=True),
+    sa.Column('language_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['language_id'], ['languages.id'], name=op.f('fk_series_language_language_id_languages')),
+    sa.ForeignKeyConstraint(['series_id'], ['series.id'], name=op.f('fk_series_language_series_id_series'))
+    )
     op.create_table('movie_country',
     sa.Column('movie_id', sa.Integer(), nullable=True),
     sa.Column('country_id', sa.Integer(), nullable=True),
@@ -107,9 +158,15 @@ def downgrade() -> None:
     op.drop_table('movie_language')
     op.drop_table('movie_genre')
     op.drop_table('movie_country')
+    op.drop_table('series_language')
+    op.drop_table('series_genre')
+    op.drop_table('series_director')
+    op.drop_table('series_country')
     op.drop_table('person_genre')
     op.drop_table('person_career_role')
     op.drop_table('movies')
+    op.drop_table('users')
+    op.drop_table('series')
     op.drop_table('persons')
     op.drop_table('languages')
     op.drop_table('genres')

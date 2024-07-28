@@ -9,7 +9,7 @@ from screenscout.models.language import Language
 from screenscout.schemas.movie import MovieCreate, MovieUpdate
 
 
-async def get(*, db_session: AsyncSession, movie_id):
+async def get(*, db_session: AsyncSession, movie_id) -> Movie | None:
     """Returns a movie based on the given id."""
     query = (
         select(Movie)
@@ -21,7 +21,7 @@ async def get(*, db_session: AsyncSession, movie_id):
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession):
+async def get_all(*, db_session: AsyncSession) -> list[Movie | None]:
     """Return all movies."""
     query = select(Movie).options(
         selectinload(Movie.country), selectinload(Movie.genres)
@@ -31,7 +31,7 @@ async def get_all(*, db_session: AsyncSession):
     return result.scalars().all()
 
 
-async def create(*, db_session: AsyncSession, movie_in: MovieCreate):
+async def create(*, db_session: AsyncSession, movie_in: MovieCreate) -> Movie:
     """Creates a new movie."""
     movie_data = movie_in.model_dump()
     country = movie_data.pop("country")
@@ -72,7 +72,9 @@ async def create(*, db_session: AsyncSession, movie_in: MovieCreate):
     return movie
 
 
-async def update(*, db_session: AsyncSession, movie: Movie, movie_in: MovieUpdate):
+async def update(
+    *, db_session: AsyncSession, movie: Movie, movie_in: MovieUpdate
+) -> Movie:
     """Updates a movie."""
     movie_data = movie.dict()
     update_data = movie_in.model_dump(exclude_unset=True)

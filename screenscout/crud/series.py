@@ -10,7 +10,7 @@ from screenscout.models.person import Person
 from screenscout.schemas.series import SeriesCreate, SeriesUpdate
 
 
-async def get(*, db_session: AsyncSession, series_id):
+async def get(*, db_session: AsyncSession, series_id) -> Series | None:
     """Returns a series based on the given id."""
     query = (
         select(Series)
@@ -22,7 +22,7 @@ async def get(*, db_session: AsyncSession, series_id):
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession):
+async def get_all(*, db_session: AsyncSession) -> list[Series | None]:
     """Return all series."""
     query = select(Series).options(
         selectinload(Series.country), selectinload(Series.genres)
@@ -32,7 +32,7 @@ async def get_all(*, db_session: AsyncSession):
     return result.scalars().all()
 
 
-async def create(*, db_session: AsyncSession, series_in: SeriesCreate):
+async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series:
     """Creates a new series."""
     series_data = series_in.model_dump()
     country = series_data.pop("country")
@@ -83,7 +83,9 @@ async def create(*, db_session: AsyncSession, series_in: SeriesCreate):
     return series
 
 
-async def update(*, db_session: AsyncSession, series: Series, series_in: SeriesUpdate):
+async def update(
+    *, db_session: AsyncSession, series: Series, series_in: SeriesUpdate
+) -> Series:
     """Updates a series."""
     series_data = series.dict()
     update_data = series_in.model_dump(exclude_unset=True)
