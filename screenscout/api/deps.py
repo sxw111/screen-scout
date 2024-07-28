@@ -6,13 +6,13 @@ from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from screenscout.core.config import settings
 from screenscout.core.db import async_session
 from screenscout.models.user import User
 from screenscout.schemas.jwt_token import TokenData
-from screenscout.core.config import settings
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/signin")
+oauth2_scheme_v1 = OAuth2PasswordBearer(tokenUrl="api/v1/auth/signin")
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -38,7 +38,7 @@ async def verify_access_token(token: str, credentials_exception) -> TokenData:
 
 
 async def get_current_user(
-    db: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]
+    db: SessionDep, token: Annotated[str, Depends(oauth2_scheme_v1)]
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

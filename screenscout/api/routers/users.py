@@ -1,21 +1,17 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException, status
 
-from screenscout.api.deps import SessionDep, CurrentUser
-from screenscout.crud.user import (
-    create,
-    get,
-    get_all,
-    get_by_email,
-    get_by_username,
-    update,
-)
-from screenscout.core.security import verify_password, create_access_token
-from screenscout.schemas.user import UserCreate, UserRead, UserUpdate
-from screenscout.schemas.jwt_token import TokenResponse
+from screenscout.api.deps import CurrentUser, SessionDep
+from screenscout.crud.user import get, update
+from screenscout.schemas.user import UserRead, UserUpdate
 
 
 router = APIRouter()
+
+
+@router.get("/me", response_model=UserRead)
+async def get_me(current_user: CurrentUser):
+    """Retrieve the current user's details."""
+    return current_user
 
 
 @router.get("/{user_id}", response_model=UserRead)
@@ -31,13 +27,7 @@ async def get_user(db_session: SessionDep, user_id: int):
     return user
 
 
-@router.get("/me", response_model=UserRead)
-async def get_me(db_session: SessionDep, current_user: CurrentUser):
-    """Retrieve the current user's details."""
-    return await get(db_session=db_session, user_id=current_user.id)
-
-
-@router.put("/{user_id}")
+@router.put("/{user_id}", response_model=UserRead)
 async def update_user(
     db_session: SessionDep, current_user: CurrentUser, user_in: UserUpdate
 ):
