@@ -4,8 +4,8 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from screenscout.api.endpoints import api_router
-from screenscout.core.config import settings
+from .api import api_router
+from .config import settings
 
 
 @asynccontextmanager
@@ -15,6 +15,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     # Shutdown
 
 
+# Initialize a FastAPI application with custom settings
 app = FastAPI(
     title=settings.TITLE,
     description=settings.DESCRIPTION,
@@ -23,7 +24,8 @@ app = FastAPI(
     redoc_url=settings.REDOC_URL,
 )
 
-
+# Add CORS middleware to the FastAPI application
+# This middleware allows configuring how the server should respond to cross-origin requests.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -32,5 +34,5 @@ app.add_middleware(
     allow_headers=settings.ALLOWED_HEADERS,
 )
 
-
+# Include API router
 app.include_router(api_router, prefix=settings.API_V1_STR)
