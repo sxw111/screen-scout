@@ -15,6 +15,9 @@ from .models import UserWatchlistMovieAssociation, UserWatchlistSeriesAssociatio
 async def create_movie_watchlist_item(
     db_session: AsyncSession, user_id: int, movie_id: int
 ):
+    """
+    Adds a movie to a user's watchlist if it doesn't already exist.
+    """
     query = select(
         exists().where(
             UserWatchlistMovieAssociation.user_id == user_id,
@@ -39,6 +42,9 @@ async def create_movie_watchlist_item(
 async def create_series_watchlist_item(
     db_session: AsyncSession, user_id: int, series_id: int
 ):
+    """
+    Adds a series to a user's watchlist if it doesn't already exist.
+    """
     query = select(
         exists().where(
             UserWatchlistSeriesAssociation.user_id == user_id,
@@ -63,6 +69,13 @@ async def create_series_watchlist_item(
 async def get_user_watchlist(
     db_session: AsyncSession, user_id: int
 ) -> list[dict[str, any]]:
+    """
+    Retrieves the user's watchlist, including both movies and series.
+
+    This function fetches the user's watchlist from the database, including both movies
+    and series that the user has added. The results are returned in a sorted list by
+    the date they were added.
+    """
     result = await db_session.execute(
         select(User)
         .options(
@@ -110,6 +123,13 @@ async def delete_watchlist_item(
     item_id: int,
     item_type: str,
 ) -> None:
+    """
+    Deletes an item (movie or series) from the user's watchlist.
+
+    This function deletes a specified movie or series from the user's watchlist based on
+    the provided item type. It checks if the item exists in the watchlist and, if found,
+    deletes it. If the item is not found, it raises an HTTP 404 exception.
+    """
     try:
         if item_type == "movie":
             assoc_result = await db_session.execute(

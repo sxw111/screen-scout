@@ -23,6 +23,9 @@ async def add_movie_to_watchlist(
     current_user: CurrentUser,
     movie_id: int,
 ):
+    """
+    Adds a movie to the current user's watchlist.
+    """
     movie = await get_movie(db_session=db_session, movie_id=movie_id)
     if not movie:
         raise HTTPException(
@@ -47,6 +50,9 @@ async def add_series_to_watchlist(
     current_user: CurrentUser,
     series_id: int,
 ):
+    """
+    Adds a series to the current user's watchlist.
+    """
     series = await get_series(db_session=db_session, series_id=series_id)
     if not series:
         raise HTTPException(
@@ -67,6 +73,9 @@ async def add_series_to_watchlist(
 
 @router.get("/", response_model=WatchlistRead)
 async def get_watchlist(db_session: SessionDep, current_user: CurrentUser):
+    """
+    Retrieves the current user's watchlist.
+    """
     watchlist = await get_user_watchlist(db_session=db_session, user_id=current_user.id)
 
     watchlist_items = []
@@ -87,6 +96,9 @@ async def remove_from_watchlist(
     item_id: int,
     item_type: str,
 ):
+    """
+    Removes an item (movie or series) from the current user's watchlist.
+    """
     await delete_watchlist_item(
         db_session=db_session,
         user_id=current_user.id,
