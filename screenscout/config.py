@@ -1,5 +1,6 @@
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_core import MultiHostUrl
 
 
 class Settings(BaseSettings):
@@ -19,11 +20,10 @@ class Settings(BaseSettings):
     REDOC_URL: str = "/redoc"
 
     POSTGRES_HOST: str
-    POSTGRES_PORT: int
+    POSTGRES_PORT: int = 5432
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    DATABASE_URL: PostgresDsn
 
     SECRET_KEY: str
     ALGORITHM: str
@@ -45,5 +45,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-print(settings.DATABASE_URL)

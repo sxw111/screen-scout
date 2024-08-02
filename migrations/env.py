@@ -6,7 +6,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from screenscout.database.core import Base
+from screenscout.database.core import Base, DATABASE_URL
 from screenscout.config import settings
 
 from screenscout.auth import models
@@ -38,7 +38,6 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-DATABASE_URL = str(settings.DATABASE_URL)
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 config.compare_type = True
 config.compare_server_default = True

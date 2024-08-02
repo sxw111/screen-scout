@@ -7,7 +7,6 @@ from sqlalchemy.orm import DeclarativeBase
 
 from screenscout.config import settings
 
-
 DATABASE_URL = (
     "postgresql+asyncpg://"
     f"{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@"

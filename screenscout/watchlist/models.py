@@ -1,12 +1,16 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, TIMESTAMP, ForeignKey, func
-from sqlalchemy.orm import relationship, declarative_base, Mapped, mapped_column
+from sqlalchemy import TIMESTAMP, ForeignKey, func
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from screenscout.database.core import Base
-from screenscout.auth.models import User
 from screenscout.movie.models import Movie
 from screenscout.series.models import Series
+from screenscout.models import ScreenScoutBase
+
+if TYPE_CHECKING:
+    from screenscout.auth.models import User
 
 
 class UserWatchlistMovieAssociation(Base):
@@ -31,3 +35,22 @@ class UserWatchlistSeriesAssociation(Base):
 
     user: Mapped["User"] = relationship(back_populates="watchlist_series")
     series: Mapped["Series"] = relationship(back_populates="users")
+
+
+class MovieWatchlistRead(ScreenScoutBase):
+    type: str = "movie"
+    title: str
+    added_at: datetime
+    details: dict
+    
+
+
+class SeriesWatchlistRead(ScreenScoutBase):
+    type: str = "series"
+    title: str
+    added_at: datetime
+    details: dict
+
+
+class WatchlistRead(ScreenScoutBase):
+    watchlist: list[MovieWatchlistRead | SeriesWatchlistRead]

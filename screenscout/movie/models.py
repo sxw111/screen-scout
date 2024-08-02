@@ -1,4 +1,5 @@
 from datetime import date
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 from sqlalchemy import Column, DECIMAL, ForeignKey, Table, Text
@@ -9,7 +10,9 @@ from screenscout.database.core import Base
 from screenscout.country.models import Country, CountryRead
 from screenscout.genre.models import Genre, GenreRead
 from screenscout.language.models import Language, LanguageRead
-from screenscout.watchlist.models import UserWatchlistMovieAssociation
+
+if TYPE_CHECKING:
+    from screenscout.watchlist.models import UserWatchlistMovieAssociation
 
 
 movie_genre_association = Table(
