@@ -25,7 +25,8 @@ app = FastAPI(
 )
 
 # Add CORS middleware to the FastAPI application
-# This middleware allows configuring how the server should respond to cross-origin requests.
+# This middleware allows configuring how the server
+# should respond to cross-origin requests.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,

@@ -26,6 +26,7 @@ types-python-jose = "^3.3.4.20240106"
 types-passlib = "^1.7.7.20240327"
 trio = "^0.26.0"
 pytest-mock = "^3.14.0"
+pre-commit = "^3.8.0"
 
 [build-system]
 requires = ["poetry-core"]

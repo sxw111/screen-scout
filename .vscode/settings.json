@@ -4,6 +4,6 @@
         "**/__pycache__": true,
         "**/.venv": true,
         "**/.pytest_cache": true,
-        "**/.mypy_cache": true,
+        "**/.mypy_cache": true
     }
 }

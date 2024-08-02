@@ -5,5 +5,3 @@ from pydantic import BaseModel
 class ScreenScoutBase(BaseModel):
     class Config:
         from_attributes = True
-
-

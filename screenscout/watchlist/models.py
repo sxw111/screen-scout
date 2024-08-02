@@ -41,15 +41,14 @@ class MovieWatchlistRead(ScreenScoutBase):
     type: str = "movie"
     title: str
     added_at: datetime
-    details: dict
-    
+    # details: dict
 
 
 class SeriesWatchlistRead(ScreenScoutBase):
     type: str = "series"
     title: str
     added_at: datetime
-    details: dict
+    # details: dict
 
 
 class WatchlistRead(ScreenScoutBase):

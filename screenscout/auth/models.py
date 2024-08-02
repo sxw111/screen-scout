@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pydantic import EmailStr
-from sqlalchemy import TIMESTAMP, Column, ForeignKey, func, Table
+from sqlalchemy import TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from screenscout.models import ScreenScoutBase

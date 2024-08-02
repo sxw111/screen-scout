@@ -4,7 +4,7 @@ from screenscout.auth.service import CurrentUser
 from screenscout.database.core import SessionDep
 from screenscout.series.service import get as get_series
 from screenscout.movie.service import get as get_movie
-from screenscout.exceptions import EntityDoesNotExist, EntityAlreadyExists
+from screenscout.exceptions import EntityAlreadyExists
 from .service import (
     create_movie_watchlist_item,
     create_series_watchlist_item,
