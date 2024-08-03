@@ -13,7 +13,7 @@ from screenscout.language.models import Language
 from screenscout.person.service import get as get_person
 
 
-async def get(*, db_session: AsyncSession, movie_id) -> Movie | None:
+async def get(*, db_session: AsyncSession, movie_id: int) -> Movie | None:
     """Returns a movie based on the given id."""
     query = (
         select(Movie)
@@ -167,7 +167,7 @@ async def update(
     return movie
 
 
-async def delete(*, db_session: AsyncSession, movie_id):
+async def delete(*, db_session: AsyncSession, movie_id: int):
     """Deletes an existing movie."""
     result = await db_session.execute(select(Movie).where(Movie.id == movie_id))
     movie = result.scalars().first()

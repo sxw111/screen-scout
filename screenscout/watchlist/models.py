@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 class UserWatchlistMovieAssociation(Base):
     __tablename__ = "user_watchlist_movies"
+
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     movie_id: Mapped[int] = mapped_column(ForeignKey("movies.id"), primary_key=True)
     added_at: Mapped[datetime] = mapped_column(
@@ -27,6 +28,7 @@ class UserWatchlistMovieAssociation(Base):
 
 class UserWatchlistSeriesAssociation(Base):
     __tablename__ = "user_watchlist_series"
+
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     series_id: Mapped[int] = mapped_column(ForeignKey("series.id"), primary_key=True)
     added_at: Mapped[datetime] = mapped_column(

@@ -6,4 +6,4 @@ exclude =
     __init__.py,
     .venv,
     .pytest_cache,
-    migrations/versions/
+    migrations

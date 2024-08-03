@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from screenscout.database.core import Base, DATABASE_URL
-from screenscout.config import settings
 
 from screenscout.auth import models
 from screenscout.movie import models
