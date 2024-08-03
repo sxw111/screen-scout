@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, status
+from datetime import date
+
+from fastapi import APIRouter, HTTPException, status, Query
 
 from screenscout.database.core import SessionDep
 from .models import SeriesCreate, SeriesRead, SeriesUpdate
@@ -9,9 +11,30 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[SeriesRead])
-async def get_all_series(db_session: SessionDep):
-    """Return all series in the database."""
-    return await get_all(db_session=db_session)
+async def get_all_series(
+    db_session: SessionDep,
+    title: str | None = None,
+    production_year: date | None = None,
+    country_id: int | None = None,
+    genre_id: int | None = None,
+    min_rating: float | None = None,
+    max_rating: float | None = None,
+    limit: int = Query(20, gt=0),
+    offset: int = Query(0, ge=0),
+) -> list[SeriesRead]:
+    """Return a paginated list of series with optional filters."""
+    series = await get_all(
+        db_session=db_session,
+        title=title,
+        production_year=production_year,
+        country_id=country_id,
+        genre_id=genre_id,
+        min_rating=min_rating,
+        max_rating=max_rating,
+        limit=limit,
+        offset=offset,
+    )
+    return series
 
 
 @router.get("/{series_id}", response_model=SeriesRead)

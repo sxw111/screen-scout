@@ -1,3 +1,6 @@
+from datetime import date
+
+from sqlalchemy import and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
@@ -26,13 +29,51 @@ async def get(*, db_session: AsyncSession, movie_id) -> Movie | None:
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[Movie | None]:
-    """Return all movies."""
+async def get_all(
+    *,
+    db_session: AsyncSession,
+    title: str | None = None,
+    production_year: date | None = None,
+    country_id: int | None = None,
+    genre_id: int | None = None,
+    min_rating: float | None = None,
+    max_rating: float | None = None,
+    limit: int = 20,
+    offset: int = 0,
+) -> list[Movie | None]:
+    """Return a paginated list of movies with optional filters."""
+
     query = select(Movie).options(
         selectinload(Movie.country),
         selectinload(Movie.genres),
         selectinload(Movie.language),
     )
+
+    filters = []
+
+    if title:
+        filters.append(Movie.title.ilike(f"%{title}%"))
+
+    if production_year:
+        filters.append(Movie.production_year == production_year)
+
+    if country_id:
+        filters.append(Movie.country.any(Country.id == country_id))
+
+    if genre_id:
+        filters.append(Movie.genres.any(Genre.id == genre_id))
+
+    if min_rating is not None:
+        filters.append(Movie.IMDb_rating >= min_rating)
+
+    if max_rating is not None:
+        filters.append(Movie.IMDb_rating <= max_rating)
+
+    if filters:
+        query = query.where(and_(*filters))
+
+    query = query.limit(limit).offset(offset)
+
     result = await db_session.execute(query)
 
     return result.scalars().all()

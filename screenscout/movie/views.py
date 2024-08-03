@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, status
+from datetime import date
+
+from fastapi import APIRouter, HTTPException, status, Query
 
 from screenscout.database.core import SessionDep
 from screenscout.exceptions import EntityDoesNotExist
@@ -10,9 +12,30 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[MovieRead])
-async def get_movies(db_session: SessionDep):
-    """Return all movies in the database."""
-    return await get_all(db_session=db_session)
+async def get_movies(
+    db_session: SessionDep,
+    title: str | None = None,
+    production_year: date | None = None,
+    country_id: int | None = None,
+    genre_id: int | None = None,
+    min_rating: float | None = None,
+    max_rating: float | None = None,
+    limit: int = Query(20, gt=0),
+    offset: int = Query(0, ge=0),
+) -> list[MovieRead]:
+    """Return all movies in the database with optional filters."""
+    movies = await get_all(
+        db_session=db_session,
+        title=title,
+        production_year=production_year,
+        country_id=country_id,
+        genre_id=genre_id,
+        min_rating=min_rating,
+        max_rating=max_rating,
+        limit=limit,
+        offset=offset,
+    )
+    return movies
 
 
 @router.get("/{movie_id}", response_model=MovieRead)
