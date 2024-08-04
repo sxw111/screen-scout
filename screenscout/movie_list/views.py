@@ -10,6 +10,7 @@ router = APIRouter()
 
 @router.get("/", response_model=list[MovieListRead])
 async def get_movie_lists(db_session: SessionDep):
+    """Return all movie lists in the database."""
     movie_lists = await get_all(db_session=db_session)
 
     return movie_lists
@@ -17,6 +18,7 @@ async def get_movie_lists(db_session: SessionDep):
 
 @router.get("/{movie_list_id}")
 async def get_movie_list(db_session: SessionDep, movie_list_id: int):
+    """Retrieve information about a movie list by its ID."""
     movie_list = await get(db_session=db_session, movie_list_id=movie_list_id)
     if not movie_list:
         raise HTTPException(
@@ -29,6 +31,7 @@ async def get_movie_list(db_session: SessionDep, movie_list_id: int):
 
 @router.post("/", response_model=MovieListRead)
 async def create_movie_list(db_session: SessionDep, movie_list_in: MovieListCreate):
+    """Create a new movie list."""
     movie_list = await create(db_session=db_session, movie_list_in=movie_list_in)
 
     return movie_list
@@ -38,6 +41,7 @@ async def create_movie_list(db_session: SessionDep, movie_list_in: MovieListCrea
 async def update_movie_list(
     db_session: SessionDep, movie_list_id: int, movie_list_in: MovieListUpdate
 ):
+    """Update a movie list."""
     movie_list = await get(db_session=db_session, movie_list_id=movie_list_id)
     if not movie_list:
         raise HTTPException(
@@ -54,6 +58,7 @@ async def update_movie_list(
 
 @router.delete("/{movie_list_id}", response_model=None)
 async def delete_movie_list(db_session: SessionDep, movie_list_id: int):
+    """Delete a movie list."""
     movie_list = await get(db_session=db_session, movie_list_id=movie_list_id)
     if not movie_list:
         raise HTTPException(

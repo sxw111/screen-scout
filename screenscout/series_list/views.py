@@ -10,6 +10,7 @@ router = APIRouter()
 
 @router.get("/", response_model=list[SeriesListRead])
 async def get_series_lists(db_session: SessionDep):
+    """Return all series lists in the database."""
     series_lists = await get_all(db_session=db_session)
 
     return series_lists
@@ -17,6 +18,7 @@ async def get_series_lists(db_session: SessionDep):
 
 @router.get("/{series_list_id}")
 async def get_series_list(db_session: SessionDep, series_list_id: int):
+    """Retrieve information about a series list by its ID."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:
         raise HTTPException(
@@ -29,6 +31,7 @@ async def get_series_list(db_session: SessionDep, series_list_id: int):
 
 @router.post("/", response_model=SeriesListRead)
 async def create_series_list(db_session: SessionDep, series_list_in: SeriesListCreate):
+    """Create a new series list.""" 
     series_list = await create(db_session=db_session, series_list_in=series_list_in)
 
     return series_list
@@ -38,6 +41,7 @@ async def create_series_list(db_session: SessionDep, series_list_in: SeriesListC
 async def update_series_list(
     db_session: SessionDep, series_list_id: int, series_list_in: SeriesListUpdate
 ):
+    """Update a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:
         raise HTTPException(
@@ -54,6 +58,7 @@ async def update_series_list(
 
 @router.delete("/{series_list_id}", response_model=None)
 async def delete_series_list(db_session: SessionDep, series_list_id: int):
+    """Delete a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:
         raise HTTPException(

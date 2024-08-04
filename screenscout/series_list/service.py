@@ -7,6 +7,7 @@ from .models import SeriesList, SeriesListCreate, SeriesListUpdate
 
 
 async def get(*, db_session: AsyncSession, series_list_id: int) -> SeriesList:
+    """Returns a series list based on the given id."""
     query = (
         select(SeriesList)
         .where(SeriesList.id == series_list_id)
@@ -18,6 +19,7 @@ async def get(*, db_session: AsyncSession, series_list_id: int) -> SeriesList:
 
 
 async def get_all(*, db_session: AsyncSession) -> list[SeriesList]:
+    """Return all series lists."""
     query = select(SeriesList).options(selectinload(SeriesList.series))
     result = await db_session.execute(query)
 
@@ -25,6 +27,7 @@ async def get_all(*, db_session: AsyncSession) -> list[SeriesList]:
 
 
 async def create(*, db_session: AsyncSession, series_list_in: SeriesListCreate):
+    """Creates a new series list."""
     series_list_data = series_list_in.model_dump()
     series = series_list_data.pop("series")
     series_list = SeriesList(**series_list_data)
@@ -47,6 +50,7 @@ async def update(
     series_list: SeriesList,
     series_list_in: SeriesListUpdate
 ) -> SeriesList:
+    """Updates a series list."""
     series_list_data = series_list.dict()
     update_data = series_list_in.model_dump(exclude_unset=True)
 
@@ -71,6 +75,7 @@ async def update(
 
 
 async def delete(*, db_session: AsyncSession, series_list_id: int):
+    """Deletes an existing series list."""
     result = await db_session.execute(
         select(SeriesList).where(SeriesList.id == series_list_id)
     )

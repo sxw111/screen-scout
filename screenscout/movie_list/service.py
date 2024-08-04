@@ -7,6 +7,7 @@ from .models import MovieList, MovieListCreate, MovieListUpdate
 
 
 async def get(*, db_session: AsyncSession, movie_list_id: int) -> MovieList:
+    """Returns a movie list based on the given id."""
     query = (
         select(MovieList)
         .where(MovieList.id == movie_list_id)
@@ -18,6 +19,7 @@ async def get(*, db_session: AsyncSession, movie_list_id: int) -> MovieList:
 
 
 async def get_all(*, db_session: AsyncSession) -> list[MovieList]:
+    """Return all movie lists."""
     query = select(MovieList).options(selectinload(MovieList.movies))
     result = await db_session.execute(query)
 
@@ -25,6 +27,7 @@ async def get_all(*, db_session: AsyncSession) -> list[MovieList]:
 
 
 async def create(*, db_session: AsyncSession, movie_list_in: MovieListCreate):
+    """Creates a new movie list."""
     movie_list_data = movie_list_in.model_dump()
     movies = movie_list_data.pop("movies")
     movie_list = MovieList(**movie_list_data)
@@ -44,6 +47,7 @@ async def create(*, db_session: AsyncSession, movie_list_in: MovieListCreate):
 async def update(
     *, db_session: AsyncSession, movie_list: MovieList, movie_list_in: MovieListUpdate
 ) -> MovieList:
+    """Updates a movie list."""
     movie_list_data = movie_list.dict()
     update_data = movie_list_in.model_dump(exclude_unset=True)
 
@@ -66,6 +70,7 @@ async def update(
 
 
 async def delete(*, db_session: AsyncSession, movie_list_id: int):
+    """Deletes an existing movie list."""
     result = await db_session.execute(
         select(MovieList).where(MovieList.id == movie_list_id)
     )
