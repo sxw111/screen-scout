@@ -3,10 +3,11 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from screenscout.series.models import Series
+
 from .models import SeriesList, SeriesListCreate, SeriesListUpdate
 
 
-async def get(*, db_session: AsyncSession, series_list_id: int) -> SeriesList:
+async def get(*, db_session: AsyncSession, series_list_id: int) -> SeriesList | None:
     """Returns a series list based on the given id."""
     query = (
         select(SeriesList)
@@ -23,14 +24,17 @@ async def get_all(*, db_session: AsyncSession) -> list[SeriesList]:
     query = select(SeriesList).options(selectinload(SeriesList.series))
     result = await db_session.execute(query)
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
-async def create(*, db_session: AsyncSession, series_list_in: SeriesListCreate):
+async def create(
+    *, db_session: AsyncSession, series_list_in: SeriesListCreate
+) -> SeriesList:
     """Creates a new series list."""
     series_list_data = series_list_in.model_dump()
     series = series_list_data.pop("series")
     series_list = SeriesList(**series_list_data)
+
     db_session.add(series_list)
     await db_session.commit()
     await db_session.refresh(series_list, ["series"])
@@ -42,6 +46,8 @@ async def create(*, db_session: AsyncSession, series_list_in: SeriesListCreate):
             series_list.series.append(series)
 
     await db_session.commit()
+
+    return series_list
 
 
 async def update(
@@ -74,7 +80,7 @@ async def update(
     return series_list
 
 
-async def delete(*, db_session: AsyncSession, series_list_id: int):
+async def delete(*, db_session: AsyncSession, series_list_id: int) -> None:
     """Deletes an existing series list."""
     result = await db_session.execute(
         select(SeriesList).where(SeriesList.id == series_list_id)

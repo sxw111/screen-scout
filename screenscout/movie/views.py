@@ -1,15 +1,15 @@
 from datetime import date
+from typing import Any
 
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, Query, status
 
+from screenscout.auth.models import User
+from screenscout.auth.permissions import OwnerAdminManager
 from screenscout.database.core import SessionDep
 from screenscout.exceptions import EntityDoesNotExist
+
 from .models import MovieCreate, MovieRead, MovieUpdate
 from .service import create, delete, get, get_all, update
-
-from screenscout.auth.permissions import OwnerAdminManager
-from screenscout.auth.models import User
-
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ async def get_movies(
     max_rating: float | None = None,
     limit: int = Query(20, gt=0),
     offset: int = Query(0, ge=0),
-) -> list[MovieRead]:
+) -> Any:
     """Return all movies in the database with optional filters."""
     movies = await get_all(
         db_session=db_session,
@@ -42,7 +42,7 @@ async def get_movies(
 
 
 @router.get("/{movie_id}", response_model=MovieRead)
-async def get_movie(db_session: SessionDep, movie_id: int):
+async def get_movie(db_session: SessionDep, movie_id: int) -> Any:
     """Retrieve information about a movie by its ID."""
     movie = await get(db_session=db_session, movie_id=movie_id)
     if not movie:
@@ -59,7 +59,7 @@ async def create_movie(
     db_session: SessionDep,
     movie_in: MovieCreate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Create a new movie."""
     try:
         movie = await create(db_session=db_session, movie_in=movie_in)
@@ -78,7 +78,7 @@ async def update_movie(
     movie_id: int,
     movie_in: MovieUpdate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Update a movie."""
     movie = await get(db_session=db_session, movie_id=movie_id)
     if not movie:
@@ -95,7 +95,7 @@ async def update_movie(
 @router.delete("/{movie_id}", response_model=None)
 async def delete_movie(
     db_session: SessionDep, movie_id: int, current_user: User = OwnerAdminManager
-):
+) -> None:
     """Delete a movie."""
     movie = await get(db_session=db_session, movie_id=movie_id)
     if not movie:

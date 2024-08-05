@@ -18,16 +18,17 @@ async def get_by_name(*, db_session: AsyncSession, name: str) -> Country | None:
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[Country | None]:
+async def get_all(*, db_session: AsyncSession) -> list[Country]:
     """Return all countries."""
     result = await db_session.execute(select(Country))
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(*, db_session: AsyncSession, country_in: CountryCreate) -> Country:
     """Creates a new country."""
     country = Country(**country_in.model_dump())
+
     db_session.add(country)
     await db_session.commit()
     await db_session.refresh(country)
@@ -51,7 +52,7 @@ async def update(
     return country
 
 
-async def delete(*, db_session: AsyncSession, country_id: int):
+async def delete(*, db_session: AsyncSession, country_id: int) -> None:
     """Deletes an existing country."""
     result = await db_session.execute(select(Country).where(Country.id == country_id))
     country = result.scalars().first()

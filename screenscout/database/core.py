@@ -1,4 +1,4 @@
-from typing import Annotated, AsyncGenerator
+from typing import Annotated, Any, AsyncGenerator
 
 from fastapi import Depends
 from sqlalchemy import MetaData
@@ -41,7 +41,7 @@ class Base(DeclarativeBase):
         }
     )
 
-    def dict(self):
+    def dict(self) -> dict[str, Any]:
         """Returns a dict representation of a model."""
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 

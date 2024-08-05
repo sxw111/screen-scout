@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from screenscout.career_role.models import CareerRole
 from screenscout.genre.models import Genre
+
 from .models import Person, PersonCreate, PersonUpdate
 
 
@@ -19,14 +20,14 @@ async def get(*, db_session: AsyncSession, person_id: int) -> Person | None:
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[Person | None]:
+async def get_all(*, db_session: AsyncSession) -> list[Person]:
     """Return all persons."""
     query = select(Person).options(
         selectinload(Person.genres), selectinload(Person.career_roles)
     )
     result = await db_session.execute(query)
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(*, db_session: AsyncSession, person_in: PersonCreate) -> Person:
@@ -35,6 +36,7 @@ async def create(*, db_session: AsyncSession, person_in: PersonCreate) -> Person
     career_roles = person_data.pop("career_roles")
     genres = person_data.pop("genres")
     person = Person(**person_data)
+
     db_session.add(person)
     await db_session.commit()
     await db_session.refresh(person, ["career_roles", "genres"])
@@ -51,7 +53,7 @@ async def create(*, db_session: AsyncSession, person_in: PersonCreate) -> Person
         result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
         genre = result.scalars().first()
         if genre is not None:
-            person.genres.append(genre)
+            person.genres.append(genre)  # type: ignore
 
     await db_session.commit()
 
@@ -84,7 +86,7 @@ async def update(
             result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
             genre = result.scalars().first()
             if genre:
-                person.genres.append(genre)
+                person.genres.append(genre)  # type: ignore
 
     await db_session.commit()
     await db_session.refresh(person)
@@ -92,7 +94,7 @@ async def update(
     return person
 
 
-async def delete(*, db_session: AsyncSession, person_id: int):
+async def delete(*, db_session: AsyncSession, person_id: int) -> None:
     """Deletes an existing person."""
     result = await db_session.execute(select(Person).where(Person.id == person_id))
     person = result.scalars().first()

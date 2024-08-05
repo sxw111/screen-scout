@@ -2,14 +2,14 @@ from datetime import date
 from typing import TYPE_CHECKING
 
 from pydantic import Field
-from sqlalchemy import Column, DECIMAL, ForeignKey, Table, Text
+from sqlalchemy import DECIMAL, Column, ForeignKey, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from screenscout.models import ScreenScoutBase
-from screenscout.database.core import Base
 from screenscout.country.models import Country, CountryRead
+from screenscout.database.core import Base
 from screenscout.genre.models import Genre, GenreRead
 from screenscout.language.models import Language, LanguageRead
+from screenscout.models import ScreenScoutBase
 
 if TYPE_CHECKING:
     from screenscout.watchlist.models import UserWatchlistMovieAssociation
@@ -86,18 +86,18 @@ class MovieCreate(MovieBase):
 
 
 class MovieUpdate(MovieBase):
-    title: str | None = None
-    production_year: date | None = None
-    IMDb_rating: float | None = None
-    description: str | None = None
-    age_category: str | None = None
-    duration: int | None = None
+    title: str | None = None  # type: ignore
+    production_year: date | None = None  # type: ignore
+    IMDb_rating: float | None = None  # type: ignore
+    description: str | None = None  # type: ignore
+    age_category: str | None = None  # type: ignore
+    duration: int | None = None  # type: ignore
     poster_url: str | None = None
     trailer_url: str | None = None
     country: list[int] | None = Field(default_factory=list)
     genres: list[int] | None = Field(default_factory=list)
     language: list[int] | None = Field(default_factory=list)
-    director_id: int | None = None
+    director_id: int | None = None  # type: ignore
     budget: int | None = None
     box_office: int | None = None
 

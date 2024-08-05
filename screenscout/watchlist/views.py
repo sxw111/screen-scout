@@ -1,20 +1,21 @@
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, status
 
+from screenscout.auth.models import User
+from screenscout.auth.permissions import OwnerAdminManagerMember
 from screenscout.database.core import SessionDep
-from screenscout.series.service import get as get_series
-from screenscout.movie.service import get as get_movie
 from screenscout.exceptions import EntityAlreadyExists
+from screenscout.movie.service import get as get_movie
+from screenscout.series.service import get as get_series
+
+from .models import MovieWatchlistRead, SeriesWatchlistRead, WatchlistRead
 from .service import (
     create_movie_watchlist_item,
     create_series_watchlist_item,
-    get_user_watchlist,
     delete_watchlist_item,
+    get_user_watchlist,
 )
-from .models import MovieWatchlistRead, SeriesWatchlistRead, WatchlistRead
-
-from screenscout.auth.permissions import OwnerAdminManagerMember
-from screenscout.auth.models import User
-
 
 router = APIRouter()
 
@@ -22,7 +23,7 @@ router = APIRouter()
 @router.post("/movies/{movie_id}")
 async def add_movie_to_watchlist(
     db_session: SessionDep, movie_id: int, current_user: User = OwnerAdminManagerMember
-):
+) -> dict[str, str]:
     """
     Adds a movie to the current user's watchlist.
     """
@@ -47,7 +48,7 @@ async def add_movie_to_watchlist(
 @router.post("/series/{series_id}")
 async def add_series_to_watchlist(
     db_session: SessionDep, series_id: int, current_user: User = OwnerAdminManagerMember
-):
+) -> dict[str, str]:
     """
     Adds a series to the current user's watchlist.
     """
@@ -72,13 +73,13 @@ async def add_series_to_watchlist(
 @router.get("/", response_model=WatchlistRead)
 async def get_watchlist(
     db_session: SessionDep, current_user: User = OwnerAdminManagerMember
-):
+) -> Any:
     """
     Retrieves the current user's watchlist.
     """
     watchlist = await get_user_watchlist(db_session=db_session, user_id=current_user.id)
 
-    watchlist_items = []
+    watchlist_items: list[MovieWatchlistRead | SeriesWatchlistRead] = []
 
     for item in watchlist:
         if item["type"] == "movie":
@@ -95,7 +96,7 @@ async def remove_from_watchlist(
     item_id: int,
     item_type: str,
     current_user: User = OwnerAdminManagerMember,
-):
+) -> None:
     """
     Removes an item (movie or series) from the current user's watchlist.
     """

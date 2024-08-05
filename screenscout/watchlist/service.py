@@ -1,20 +1,21 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import NoResultFound
+from typing import Any
+
 from fastapi import HTTPException, status
-from sqlalchemy.future import select
 from sqlalchemy import exists
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-
 from screenscout.auth.models import User
-
 from screenscout.exceptions import EntityAlreadyExists
+
 from .models import UserWatchlistMovieAssociation, UserWatchlistSeriesAssociation
 
 
 async def create_movie_watchlist_item(
     db_session: AsyncSession, user_id: int, movie_id: int
-):
+) -> dict[str, str]:
     """
     Adds a movie to a user's watchlist if it doesn't already exist.
     """
@@ -41,7 +42,7 @@ async def create_movie_watchlist_item(
 
 async def create_series_watchlist_item(
     db_session: AsyncSession, user_id: int, series_id: int
-):
+) -> dict[str, str]:
     """
     Adds a series to a user's watchlist if it doesn't already exist.
     """
@@ -68,7 +69,7 @@ async def create_series_watchlist_item(
 
 async def get_user_watchlist(
     db_session: AsyncSession, user_id: int
-) -> list[dict[str, any]]:
+) -> list[dict[str, Any]]:
     """
     Retrieves the user's watchlist, including both movies and series.
 
@@ -102,17 +103,17 @@ async def get_user_watchlist(
                 }
             )
 
-        for assoc in user.watchlist_series:
+        for assoc in user.watchlist_series:  # type: ignore
             watchlist.append(
                 {
                     "type": "series",
-                    "title": assoc.series.title,
+                    "title": assoc.series.title,  # type: ignore
                     "added_at": assoc.added_at,
                     # "details": assoc.series,
                 }
             )
 
-        watchlist.sort(key=lambda x: x["added_at"])
+        watchlist.sort(key=lambda x: x["added_at"])  # type: ignore
 
     return watchlist
 

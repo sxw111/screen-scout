@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import TIMESTAMP, ForeignKey, func
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from screenscout.database.core import Base
+from screenscout.models import ScreenScoutBase
 from screenscout.movie.models import Movie
 from screenscout.series.models import Series
-from screenscout.models import ScreenScoutBase
 
 if TYPE_CHECKING:
     from screenscout.auth.models import User

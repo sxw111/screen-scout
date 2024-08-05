@@ -1,15 +1,14 @@
 from datetime import date
 
 from pydantic import Field
-from sqlalchemy import Column, DATE, ForeignKey, Table
+from sqlalchemy import DATE, Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from screenscout.models import ScreenScoutBase
-from screenscout.database.core import Base
 from screenscout.career_role.models import CareerRole, CareerRoleRead
+from screenscout.database.core import Base
 from screenscout.genre.models import Genre, GenreRead
+from screenscout.models import ScreenScoutBase
 from screenscout.movie.models import Movie
-
 
 person_genre_association = Table(
     "person_genre",

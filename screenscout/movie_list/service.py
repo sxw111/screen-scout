@@ -3,10 +3,11 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from screenscout.movie.models import Movie
+
 from .models import MovieList, MovieListCreate, MovieListUpdate
 
 
-async def get(*, db_session: AsyncSession, movie_list_id: int) -> MovieList:
+async def get(*, db_session: AsyncSession, movie_list_id: int) -> MovieList | None:
     """Returns a movie list based on the given id."""
     query = (
         select(MovieList)
@@ -23,14 +24,17 @@ async def get_all(*, db_session: AsyncSession) -> list[MovieList]:
     query = select(MovieList).options(selectinload(MovieList.movies))
     result = await db_session.execute(query)
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
-async def create(*, db_session: AsyncSession, movie_list_in: MovieListCreate):
+async def create(
+    *, db_session: AsyncSession, movie_list_in: MovieListCreate
+) -> MovieList:
     """Creates a new movie list."""
     movie_list_data = movie_list_in.model_dump()
     movies = movie_list_data.pop("movies")
     movie_list = MovieList(**movie_list_data)
+
     db_session.add(movie_list)
     await db_session.commit()
     await db_session.refresh(movie_list, ["movies"])
@@ -42,6 +46,8 @@ async def create(*, db_session: AsyncSession, movie_list_in: MovieListCreate):
             movie_list.movies.append(movie)
 
     await db_session.commit()
+
+    return movie_list
 
 
 async def update(
@@ -69,7 +75,7 @@ async def update(
     return movie_list
 
 
-async def delete(*, db_session: AsyncSession, movie_list_id: int):
+async def delete(*, db_session: AsyncSession, movie_list_id: int) -> None:
     """Deletes an existing movie list."""
     result = await db_session.execute(
         select(MovieList).where(MovieList.id == movie_list_id)

@@ -22,14 +22,16 @@ Functions:
   OWNER, ADMIN, MANAGER, or MEMBER.
 """
 
-from fastapi import HTTPException, Depends, status
+from typing import Callable
+
+from fastapi import Depends, HTTPException, status
 
 from .enums import UserRole
-from .service import get_current_user
 from .models import User
+from .service import get_current_user
 
 
-def role_required(required_roles: list[UserRole]):
+def role_required(required_roles: list[UserRole]) -> Callable[[User], User]:
     """
     Decorator to check the user's role.
 

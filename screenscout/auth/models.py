@@ -4,12 +4,13 @@ from pydantic import EmailStr
 from sqlalchemy import TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from screenscout.models import ScreenScoutBase
 from screenscout.database.core import Base
+from screenscout.models import ScreenScoutBase
 from screenscout.watchlist.models import (
     UserWatchlistMovieAssociation,
     UserWatchlistSeriesAssociation,
 )
+
 from .enums import UserRole
 
 
@@ -50,8 +51,8 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    username: str | None
-    email: EmailStr | None
+    username: str | None  # type: ignore
+    email: EmailStr | None  # type: ignore
     password: str | None
 
 

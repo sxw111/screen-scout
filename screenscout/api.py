@@ -6,12 +6,11 @@ from screenscout.country.views import router as countries_router
 from screenscout.genre.views import router as genres_router
 from screenscout.language.views import router as languages_router
 from screenscout.movie.views import router as movies_router
+from screenscout.movie_list.views import router as movie_lists_router
 from screenscout.person.views import router as persons_router
 from screenscout.series.views import router as series_router
-from screenscout.watchlist.views import router as watchlist_router
-from screenscout.movie_list.views import router as movie_lists_router
 from screenscout.series_list.views import router as series_lists_router
-
+from screenscout.watchlist.views import router as watchlist_router
 
 api_router = APIRouter()
 
@@ -36,5 +35,5 @@ api_router.include_router(
 
 
 @api_router.get("/healthcheck", include_in_schema=False)
-def healthcheck():
+def healthcheck() -> dict[str, str]:
     return {"status": "ok"}

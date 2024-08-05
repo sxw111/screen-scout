@@ -5,11 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from screenscout.exceptions import EntityDoesNotExist
-from screenscout.movie.models import Movie, MovieCreate, MovieUpdate
 from screenscout.country.models import Country
+from screenscout.exceptions import EntityDoesNotExist
 from screenscout.genre.models import Genre
 from screenscout.language.models import Language
+from screenscout.movie.models import Movie, MovieCreate, MovieUpdate
 from screenscout.person.service import get as get_person
 
 
@@ -40,7 +40,7 @@ async def get_all(
     max_rating: float | None = None,
     limit: int = 20,
     offset: int = 0,
-) -> list[Movie | None]:
+) -> list[Movie]:
     """Return a paginated list of movies with optional filters."""
 
     query = select(Movie).options(
@@ -55,19 +55,19 @@ async def get_all(
         filters.append(Movie.title.ilike(f"%{title}%"))
 
     if production_year:
-        filters.append(Movie.production_year == production_year)
+        filters.append(Movie.production_year == production_year)  # type: ignore
 
     if country_id:
-        filters.append(Movie.country.any(Country.id == country_id))
+        filters.append(Movie.country.any(Country.id == country_id))  # type: ignore
 
     if genre_id:
-        filters.append(Movie.genres.any(Genre.id == genre_id))
+        filters.append(Movie.genres.any(Genre.id == genre_id))  # type: ignore
 
     if min_rating is not None:
-        filters.append(Movie.IMDb_rating >= min_rating)
+        filters.append(Movie.IMDb_rating >= min_rating)  # type: ignore
 
     if max_rating is not None:
-        filters.append(Movie.IMDb_rating <= max_rating)
+        filters.append(Movie.IMDb_rating <= max_rating)  # type: ignore
 
     if filters:
         query = query.where(and_(*filters))
@@ -76,7 +76,7 @@ async def get_all(
 
     result = await db_session.execute(query)
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(*, db_session: AsyncSession, movie_in: MovieCreate) -> Movie:
@@ -91,6 +91,7 @@ async def create(*, db_session: AsyncSession, movie_in: MovieCreate) -> Movie:
     genres = movie_data.pop("genres")
     languages = movie_data.pop("language")
     movie = Movie(**movie_data)
+
     db_session.add(movie)
     await db_session.commit()
     await db_session.refresh(movie, ["country", "genres", "language"])
@@ -107,7 +108,7 @@ async def create(*, db_session: AsyncSession, movie_in: MovieCreate) -> Movie:
         result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
         genre = result.scalars().first()
         if genre is not None:
-            movie.genres.append(genre)
+            movie.genres.append(genre)  # type: ignore
 
     for language_id in languages:
         result = await db_session.execute(
@@ -115,7 +116,7 @@ async def create(*, db_session: AsyncSession, movie_in: MovieCreate) -> Movie:
         )
         language = result.scalars().first()
         if language is not None:
-            movie.language.append(language)
+            movie.language.append(language)  # type: ignore
 
     await db_session.commit()
 
@@ -149,7 +150,7 @@ async def update(
             result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
             genre = result.scalars().first()
             if genre:
-                movie.genres.append(genre)
+                movie.genres.append(genre)  # type: ignore
 
     if movie_in.language is not None:
         movie.language.clear()
@@ -159,7 +160,7 @@ async def update(
             )
             language = result.scalars().first()
             if language:
-                movie.language.append(language)
+                movie.language.append(language)  # type: ignore
 
     await db_session.commit()
     await db_session.refresh(movie)
@@ -167,7 +168,7 @@ async def update(
     return movie
 
 
-async def delete(*, db_session: AsyncSession, movie_id: int):
+async def delete(*, db_session: AsyncSession, movie_id: int) -> None:
     """Deletes an existing movie."""
     result = await db_session.execute(select(Movie).where(Movie.id == movie_id))
     movie = result.scalars().first()

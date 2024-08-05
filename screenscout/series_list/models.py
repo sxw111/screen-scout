@@ -1,11 +1,10 @@
+from pydantic import Field
 from sqlalchemy import Column, ForeignKey, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from pydantic import Field
 
 from screenscout.database.core import Base
 from screenscout.models import ScreenScoutBase
 from screenscout.series.models import Series
-
 
 series_list_series_association = Table(
     "series_list_series",
@@ -41,8 +40,8 @@ class SeriesListCreate(SeriesListBase):
 
 
 class SeriesListUpdate(SeriesListBase):
-    name: str | None = None
-    description: str | None = None
+    name: str | None = None  # type: ignore
+    description: str | None = None  # type: ignore
     series: list[int] | None = Field(default_factory=list)
 
 

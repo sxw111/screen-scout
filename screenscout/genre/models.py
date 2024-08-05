@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 
-from screenscout.models import ScreenScoutBase
 from screenscout.database.core import Base
+from screenscout.models import ScreenScoutBase
 
 
 class Genre(Base):

@@ -20,11 +20,11 @@ async def get_by_name(*, db_session: AsyncSession, name: str) -> CareerRole | No
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[CareerRole | None]:
+async def get_all(*, db_session: AsyncSession) -> list[CareerRole]:
     """Return all career roles."""
     result = await db_session.execute(select(CareerRole))
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(
@@ -32,6 +32,7 @@ async def create(
 ) -> CareerRole:
     """Creates a new career role."""
     career_role = CareerRole(**career_role_in.model_dump())
+
     db_session.add(career_role)
     await db_session.commit()
     await db_session.refresh(career_role)
@@ -58,7 +59,7 @@ async def update(
     return career_role
 
 
-async def delete(*, db_session: AsyncSession, career_role_id: int):
+async def delete(*, db_session: AsyncSession, career_role_id: int) -> None:
     """Deletes an existing career role."""
     result = await db_session.execute(
         select(CareerRole).where(CareerRole.id == career_role_id)

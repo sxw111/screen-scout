@@ -1,26 +1,27 @@
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, status
 
-from screenscout.database.core import SessionDep
-from .models import SeriesListCreate, SeriesListUpdate, SeriesListRead
-from .service import create, delete, get, get_all, update
-
-from screenscout.auth.permissions import OwnerAdminManager
 from screenscout.auth.models import User
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.database.core import SessionDep
 
+from .models import SeriesListCreate, SeriesListRead, SeriesListUpdate
+from .service import create, delete, get, get_all, update
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[SeriesListRead])
-async def get_series_lists(db_session: SessionDep):
+async def get_series_lists(db_session: SessionDep) -> Any:
     """Return all series lists in the database."""
     series_lists = await get_all(db_session=db_session)
 
     return series_lists
 
 
-@router.get("/{series_list_id}")
-async def get_series_list(db_session: SessionDep, series_list_id: int):
+@router.get("/{series_list_id}", response_model=SeriesListRead)
+async def get_series_list(db_session: SessionDep, series_list_id: int) -> Any:
     """Retrieve information about a series list by its ID."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:
@@ -37,7 +38,7 @@ async def create_series_list(
     db_session: SessionDep,
     series_list_in: SeriesListCreate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Create a new series list."""
     series_list = await create(db_session=db_session, series_list_in=series_list_in)
 
@@ -50,7 +51,7 @@ async def update_series_list(
     series_list_id: int,
     series_list_in: SeriesListUpdate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Update a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:
@@ -69,7 +70,7 @@ async def update_series_list(
 @router.delete("/{series_list_id}", response_model=None)
 async def delete_series_list(
     db_session: SessionDep, series_list_id: int, current_user: User = OwnerAdminManager
-):
+) -> None:
     """Delete a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:

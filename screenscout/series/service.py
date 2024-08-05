@@ -9,10 +9,11 @@ from screenscout.country.models import Country
 from screenscout.genre.models import Genre
 from screenscout.language.models import Language
 from screenscout.person.models import Person
+
 from .models import Series, SeriesCreate, SeriesUpdate
 
 
-async def get(*, db_session: AsyncSession, series_id) -> Series | None:
+async def get(*, db_session: AsyncSession, series_id: int) -> Series | None:
     """Returns a series based on the given id."""
     query = (
         select(Series)
@@ -35,7 +36,7 @@ async def get_all(
     max_rating: float | None = None,
     limit: int = 20,
     offset: int = 0,
-) -> list[Series | None]:
+) -> list[Series]:
     """Return a paginated list of series with optional filters."""
     query = select(Series).options(
         selectinload(Series.country),
@@ -50,19 +51,19 @@ async def get_all(
         filters.append(Series.title.ilike(f"%{title}%"))
 
     if production_year:
-        filters.append(Series.production_year == production_year)
+        filters.append(Series.production_year == production_year)  # type: ignore
 
     if country_id:
-        filters.append(Series.country.any(Country.id == country_id))
+        filters.append(Series.country.any(Country.id == country_id))  # type: ignore
 
     if genre_id:
-        filters.append(Series.genres.any(Genre.id == genre_id))
+        filters.append(Series.genres.any(Genre.id == genre_id))  # type: ignore
 
     if min_rating is not None:
-        filters.append(Series.IMDb_rating >= min_rating)
+        filters.append(Series.IMDb_rating >= min_rating)  # type: ignore
 
     if max_rating is not None:
-        filters.append(Series.IMDb_rating <= max_rating)
+        filters.append(Series.IMDb_rating <= max_rating)  # type: ignore
 
     if filters:
         query = query.where(and_(*filters))
@@ -71,7 +72,7 @@ async def get_all(
 
     result = await db_session.execute(query)
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series:
@@ -82,6 +83,7 @@ async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series
     languages = series_data.pop("language")
     director = series_data.pop("director")
     series = Series(**series_data)
+
     db_session.add(series)
     await db_session.commit()
     await db_session.refresh(series, ["country", "genres", "language", "director"])
@@ -98,7 +100,7 @@ async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series
         result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
         genre = result.scalars().first()
         if genre is not None:
-            series.genres.append(genre)
+            series.genres.append(genre)  # type: ignore
 
     for language_id in languages:
         result = await db_session.execute(
@@ -106,7 +108,7 @@ async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series
         )
         language = result.scalars().first()
         if language is not None:
-            series.language.append(language)
+            series.language.append(language)  # type: ignore
 
     for director_id in director:
         result = await db_session.execute(
@@ -114,7 +116,7 @@ async def create(*, db_session: AsyncSession, series_in: SeriesCreate) -> Series
         )
         director_db = result.scalars().first()
         if director_db is not None:
-            series.director.append(director_db)
+            series.director.append(director_db)  # type: ignore
 
     await db_session.commit()
 
@@ -147,7 +149,7 @@ async def update(
             result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
             genre = result.scalars().first()
             if genre:
-                series.genres.append(genre)
+                series.genres.append(genre)  # type: ignore
 
     if series_in.language is not None:
         series.language.clear()
@@ -157,7 +159,7 @@ async def update(
             )
             language = result.scalars().first()
             if language:
-                series.language.append(language)
+                series.language.append(language)  # type: ignore
 
     if series_in.director is not None:
         series.director.clear()
@@ -167,7 +169,7 @@ async def update(
             )
             director_db = result.scalars().first()
             if director_db:
-                series.director.append(director_db)
+                series.director.append(director_db)  # type: ignore
 
     await db_session.commit()
     await db_session.refresh(series)
@@ -175,7 +177,7 @@ async def update(
     return series
 
 
-async def delete(*, db_session: AsyncSession, series_id):
+async def delete(*, db_session: AsyncSession, series_id: int) -> None:
     """Deletes an existing series."""
     result = await db_session.execute(select(Series).where(Series.id == series_id))
     series = result.scalars().first()

@@ -1,18 +1,21 @@
+from typing import Any
+
 from fastapi import APIRouter, HTTPException, status
 
+from screenscout.auth.models import User
+from screenscout.auth.permissions import OwnerAdminManager
 from screenscout.database.core import SessionDep
+
 from .models import GenreCreate, GenreRead, GenreUpdate
 from .service import create, delete, get, get_all, get_by_name, update
-
-from screenscout.auth.permissions import OwnerAdminManager
-from screenscout.auth.models import User
-
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[GenreRead])
-async def get_genres(db_session: SessionDep, current_user: User = OwnerAdminManager):
+async def get_genres(
+    db_session: SessionDep, current_user: User = OwnerAdminManager
+) -> Any:
     """Return all genres in the database."""
     return await get_all(db_session=db_session)
 
@@ -20,7 +23,7 @@ async def get_genres(db_session: SessionDep, current_user: User = OwnerAdminMana
 @router.get("/{genre_id}", response_model=GenreRead)
 async def get_genre(
     db_session: SessionDep, genre_id: int, current_user: User = OwnerAdminManager
-):
+) -> Any:
     """Retrieve information about a genre by its ID."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:
@@ -37,7 +40,7 @@ async def create_genre(
     db_session: SessionDep,
     genre_in: GenreCreate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Create a new genre."""
     genre = await get_by_name(db_session=db_session, name=genre_in.name)
     if genre:
@@ -57,7 +60,7 @@ async def update_genre(
     genre_id: int,
     genre_in: GenreUpdate,
     current_user: User = OwnerAdminManager,
-):
+) -> Any:
     """Update a genre."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:
@@ -73,7 +76,7 @@ async def update_genre(
 @router.delete("/{genre_id}", response_model=None)
 async def delete_genre(
     db_session: SessionDep, genre_id: int, current_user: User = OwnerAdminManager
-):
+) -> None:
     """Delete a genre."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:

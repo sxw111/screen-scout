@@ -9,7 +9,7 @@ from .config import settings
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Startup
     yield
     # Shutdown

@@ -18,16 +18,17 @@ async def get_by_name(*, db_session: AsyncSession, name: str) -> Genre | None:
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[Genre | None]:
+async def get_all(*, db_session: AsyncSession) -> list[Genre]:
     """Return all genres."""
     result = await db_session.execute(select(Genre))
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def create(*, db_session: AsyncSession, genre_in: GenreCreate) -> Genre:
     """Creates a new genre."""
     genre = Genre(**genre_in.model_dump())
+
     db_session.add(genre)
     await db_session.commit()
     await db_session.refresh(genre)
@@ -51,7 +52,7 @@ async def update(
     return genre
 
 
-async def delete(*, db_session: AsyncSession, genre_id: int):
+async def delete(*, db_session: AsyncSession, genre_id: int) -> None:
     """Deletes an existing genre."""
     result = await db_session.execute(select(Genre).where(Genre.id == genre_id))
     genre = result.scalars().first()

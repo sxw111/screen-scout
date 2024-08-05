@@ -12,21 +12,22 @@ from screenscout.database.core import SessionDep
 from screenscout.exceptions import CredentialsException, UserDeactivatedException
 from screenscout.jwt.models import TokenData
 from screenscout.security import get_password_hash
+
 from .models import User, UserCreate, UserUpdate
 
 
-async def get(*, db_session: AsyncSession, user_id) -> User | None:
+async def get(*, db_session: AsyncSession, user_id: int) -> User | None:
     """Returns a user based on the given id."""
     result = await db_session.execute(select(User).where(User.id == user_id))
 
     return result.scalars().first()
 
 
-async def get_all(*, db_session: AsyncSession) -> list[User | None]:
+async def get_all(*, db_session: AsyncSession) -> list[User]:
     """Return all users."""
     result = await db_session.execute(select(User))
 
-    return result.scalars().all()
+    return result.scalars().all()  # type: ignore
 
 
 async def get_by_email(*, db_session: AsyncSession, email: EmailStr) -> User | None:
@@ -79,7 +80,9 @@ async def update(*, db_session: AsyncSession, user: User, user_in: UserUpdate) -
     return user
 
 
-async def verify_access_token(token: str, credentials_exception) -> TokenData:
+async def verify_access_token(
+    token: str, credentials_exception: CredentialsException
+) -> TokenData:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]

@@ -1,11 +1,10 @@
+from pydantic import Field
 from sqlalchemy import Column, ForeignKey, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from pydantic import Field
 
 from screenscout.database.core import Base
 from screenscout.models import ScreenScoutBase
 from screenscout.movie.models import Movie
-
 
 movie_list_movie_association = Table(
     "movie_list_movie",
@@ -39,8 +38,8 @@ class MovieListCreate(MovieListBase):
 
 
 class MovieListUpdate(MovieListBase):
-    name: str | None = None
-    description: str | None = None
+    name: str | None = None  # type: ignore
+    description: str | None = None  # type: ignore
     movies: list[int] | None = Field(default_factory=list)
 
 

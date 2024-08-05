@@ -1,21 +1,19 @@
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
-from screenscout.database.core import Base, DATABASE_URL
-
 from screenscout.auth import models
+from screenscout.career_role import models
+from screenscout.country import models
+from screenscout.database.core import DATABASE_URL, Base
+from screenscout.genre import models
+from screenscout.language import models
 from screenscout.movie import models
 from screenscout.person import models
-from screenscout.genre import models
-from screenscout.country import models
-from screenscout.career_role import models
-from screenscout.language import models
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
