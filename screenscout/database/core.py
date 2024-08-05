@@ -14,7 +14,7 @@ DATABASE_URL = (
     f"{settings.POSTGRES_DB}"
 )
 
-async_engine = create_async_engine(DATABASE_URL, echo=True)
+async_engine = create_async_engine(DATABASE_URL, echo=False)
 
 async_session = async_sessionmaker(
     bind=async_engine,
