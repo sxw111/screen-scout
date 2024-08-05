@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = {version = "^0.111.0", extras = ["all"]}
-uvicorn = {version = "^0.30.1", extras = ["standart"]}
+uvicorn = {version = "^0.30.5", extras = ["standart"]}
 sqlalchemy = {version = "^2.0.31", extras = ["asyncio"]}
 alembic = "^1.13.2"
 passlib = {version = "^1.7.4", extras = ["bcrypt"]}
@@ -19,12 +19,12 @@ asgi-lifespan = "^2.1.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
 pytest-asyncio = "^0.23.7"
-black = "^24.4.2"
-mypy = "^1.10.1"
-flake8 = "^7.1.0"
+black = "^24.8.0"
+mypy = "^1.11.1"
+flake8 = "^7.1.1"
 types-python-jose = "^3.3.4.20240106"
 types-passlib = "^1.7.7.20240327"
-trio = "^0.26.0"
+trio = "^0.26.1"
 pytest-mock = "^3.14.0"
 pre-commit = "^3.8.0"
 
