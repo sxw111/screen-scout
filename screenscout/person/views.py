@@ -4,6 +4,9 @@ from screenscout.database.core import SessionDep
 from .models import PersonCreate, PersonRead, PersonUpdate
 from .service import create, delete, get, get_all, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
@@ -28,7 +31,11 @@ async def get_person(db_session: SessionDep, person_id: int):
 
 
 @router.post("/", response_model=PersonRead)
-async def create_person(db_session: SessionDep, person_in: PersonCreate):
+async def create_person(
+    db_session: SessionDep,
+    person_in: PersonCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new person."""
     person = await create(db_session=db_session, person_in=person_in)
 
@@ -37,7 +44,10 @@ async def create_person(db_session: SessionDep, person_in: PersonCreate):
 
 @router.put("/{person_id}", response_model=PersonRead)
 async def update_person(
-    db_session: SessionDep, person_id: int, person_in: PersonUpdate
+    db_session: SessionDep,
+    person_id: int,
+    person_in: PersonUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a person."""
     person = await get(db_session=db_session, person_id=person_id)
@@ -53,7 +63,9 @@ async def update_person(
 
 
 @router.delete("/{person_id}", response_model=None)
-async def delete_person(db_session: SessionDep, person_id: int):
+async def delete_person(
+    db_session: SessionDep, person_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a person."""
     person = await get(db_session=db_session, person_id=person_id)
     if not person:

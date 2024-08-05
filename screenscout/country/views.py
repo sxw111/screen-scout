@@ -4,18 +4,23 @@ from screenscout.database.core import SessionDep
 from .models import CountryCreate, CountryRead, CountryUpdate
 from .service import create, delete, get, get_all, get_by_name, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[CountryRead])
-async def get_countries(db_session: SessionDep):
+async def get_countries(db_session: SessionDep, current_user: User = OwnerAdminManager):
     """Return all countries in the database."""
     return await get_all(db_session=db_session)
 
 
 @router.get("/{country_id}", response_model=CountryRead)
-async def get_country(db_session: SessionDep, country_id: int):
+async def get_country(
+    db_session: SessionDep, country_id: int, current_user: User = OwnerAdminManager
+):
     """Retrieve information about a country by its ID."""
     country = await get(db_session=db_session, country_id=country_id)
     if not country:
@@ -28,7 +33,11 @@ async def get_country(db_session: SessionDep, country_id: int):
 
 
 @router.post("/", response_model=CountryRead)
-async def create_country(db_session: SessionDep, country_in: CountryCreate):
+async def create_country(
+    db_session: SessionDep,
+    country_in: CountryCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new country."""
     country = await get_by_name(db_session=db_session, name=country_in.name)
     if country:
@@ -44,7 +53,10 @@ async def create_country(db_session: SessionDep, country_in: CountryCreate):
 
 @router.put("/{country_id}", response_model=CountryRead)
 async def update_country(
-    db_session: SessionDep, country_id: int, country_in: CountryUpdate
+    db_session: SessionDep,
+    country_id: int,
+    country_in: CountryUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a country."""
     country = await get(db_session=db_session, country_id=country_id)
@@ -61,7 +73,9 @@ async def update_country(
 
 
 @router.delete("/{country_id}", response_model=None)
-async def delete_country(db_session: SessionDep, country_id: int):
+async def delete_country(
+    db_session: SessionDep, country_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a country."""
     country = await get(db_session=db_session, country_id=country_id)
     if not country:

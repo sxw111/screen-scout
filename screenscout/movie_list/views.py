@@ -4,6 +4,9 @@ from screenscout.database.core import SessionDep
 from .models import MovieListCreate, MovieListUpdate, MovieListRead
 from .service import create, delete, get, get_all, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
@@ -30,7 +33,11 @@ async def get_movie_list(db_session: SessionDep, movie_list_id: int):
 
 
 @router.post("/", response_model=MovieListRead)
-async def create_movie_list(db_session: SessionDep, movie_list_in: MovieListCreate):
+async def create_movie_list(
+    db_session: SessionDep,
+    movie_list_in: MovieListCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new movie list."""
     movie_list = await create(db_session=db_session, movie_list_in=movie_list_in)
 
@@ -39,7 +46,10 @@ async def create_movie_list(db_session: SessionDep, movie_list_in: MovieListCrea
 
 @router.put("/{movie_list_id}", response_model=MovieListRead)
 async def update_movie_list(
-    db_session: SessionDep, movie_list_id: int, movie_list_in: MovieListUpdate
+    db_session: SessionDep,
+    movie_list_id: int,
+    movie_list_in: MovieListUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a movie list."""
     movie_list = await get(db_session=db_session, movie_list_id=movie_list_id)
@@ -57,7 +67,9 @@ async def update_movie_list(
 
 
 @router.delete("/{movie_list_id}", response_model=None)
-async def delete_movie_list(db_session: SessionDep, movie_list_id: int):
+async def delete_movie_list(
+    db_session: SessionDep, movie_list_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a movie list."""
     movie_list = await get(db_session=db_session, movie_list_id=movie_list_id)
     if not movie_list:

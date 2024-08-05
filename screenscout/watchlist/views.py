@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
 
-from screenscout.auth.service import CurrentUser
 from screenscout.database.core import SessionDep
 from screenscout.series.service import get as get_series
 from screenscout.movie.service import get as get_movie
@@ -13,15 +12,16 @@ from .service import (
 )
 from .models import MovieWatchlistRead, SeriesWatchlistRead, WatchlistRead
 
+from screenscout.auth.permissions import OwnerAdminManagerMember
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
 
 @router.post("/movies/{movie_id}")
 async def add_movie_to_watchlist(
-    db_session: SessionDep,
-    current_user: CurrentUser,
-    movie_id: int,
+    db_session: SessionDep, movie_id: int, current_user: User = OwnerAdminManagerMember
 ):
     """
     Adds a movie to the current user's watchlist.
@@ -46,9 +46,7 @@ async def add_movie_to_watchlist(
 
 @router.post("/series/{series_id}")
 async def add_series_to_watchlist(
-    db_session: SessionDep,
-    current_user: CurrentUser,
-    series_id: int,
+    db_session: SessionDep, series_id: int, current_user: User = OwnerAdminManagerMember
 ):
     """
     Adds a series to the current user's watchlist.
@@ -72,7 +70,9 @@ async def add_series_to_watchlist(
 
 
 @router.get("/", response_model=WatchlistRead)
-async def get_watchlist(db_session: SessionDep, current_user: CurrentUser):
+async def get_watchlist(
+    db_session: SessionDep, current_user: User = OwnerAdminManagerMember
+):
     """
     Retrieves the current user's watchlist.
     """
@@ -92,9 +92,9 @@ async def get_watchlist(db_session: SessionDep, current_user: CurrentUser):
 @router.delete("/{item_id}")
 async def remove_from_watchlist(
     db_session: SessionDep,
-    current_user: CurrentUser,
     item_id: int,
     item_type: str,
+    current_user: User = OwnerAdminManagerMember,
 ):
     """
     Removes an item (movie or series) from the current user's watchlist.

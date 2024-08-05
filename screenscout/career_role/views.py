@@ -4,18 +4,25 @@ from screenscout.database.core import SessionDep
 from .models import CareerRoleCreate, CareerRoleRead, CareerRoleUpdate
 from .service import create, delete, get, get_all, get_by_name, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[CareerRoleRead])
-async def get_career_roles(db_session: SessionDep):
+async def get_career_roles(
+    db_session: SessionDep, current_user: User = OwnerAdminManager
+):
     """Return all career roles in the database."""
     return await get_all(db_session=db_session)
 
 
 @router.get("/{career_role_id}", response_model=CareerRoleRead)
-async def get_career_role(db_session: SessionDep, career_role_id: int):
+async def get_career_role(
+    db_session: SessionDep, career_role_id: int, current_user: User = OwnerAdminManager
+):
     """Retrieve information about a career role by its ID."""
     career_role = await get(db_session=db_session, career_role_id=career_role_id)
     if not career_role:
@@ -28,7 +35,11 @@ async def get_career_role(db_session: SessionDep, career_role_id: int):
 
 
 @router.post("/", response_model=CareerRoleRead)
-async def create_career_role(db_session: SessionDep, career_role_in: CareerRoleCreate):
+async def create_career_role(
+    db_session: SessionDep,
+    career_role_in: CareerRoleCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new career role."""
     career_role = await get_by_name(db_session=db_session, name=career_role_in.name)
     if career_role:
@@ -44,7 +55,10 @@ async def create_career_role(db_session: SessionDep, career_role_in: CareerRoleC
 
 @router.put("/{career_role_id}", response_model=CareerRoleRead)
 async def update_career_role(
-    db_session: SessionDep, career_role_id: int, career_role_in: CareerRoleUpdate
+    db_session: SessionDep,
+    career_role_id: int,
+    career_role_in: CareerRoleUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a career role."""
     career_role = await get(db_session=db_session, career_role_id=career_role_id)
@@ -61,7 +75,9 @@ async def update_career_role(
 
 
 @router.delete("/{career_role_id}", response_model=None)
-async def delete_career_role(db_session: SessionDep, career_role_id: int):
+async def delete_career_role(
+    db_session: SessionDep, career_role_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a career role."""
     career_role = await get(db_session=db_session, career_role_id=career_role_id)
     if not career_role:

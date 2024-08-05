@@ -4,6 +4,9 @@ from screenscout.database.core import SessionDep
 from .models import SeriesListCreate, SeriesListUpdate, SeriesListRead
 from .service import create, delete, get, get_all, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
@@ -30,8 +33,12 @@ async def get_series_list(db_session: SessionDep, series_list_id: int):
 
 
 @router.post("/", response_model=SeriesListRead)
-async def create_series_list(db_session: SessionDep, series_list_in: SeriesListCreate):
-    """Create a new series list.""" 
+async def create_series_list(
+    db_session: SessionDep,
+    series_list_in: SeriesListCreate,
+    current_user: User = OwnerAdminManager,
+):
+    """Create a new series list."""
     series_list = await create(db_session=db_session, series_list_in=series_list_in)
 
     return series_list
@@ -39,7 +46,10 @@ async def create_series_list(db_session: SessionDep, series_list_in: SeriesListC
 
 @router.put("/{series_list_id}", response_model=SeriesListRead)
 async def update_series_list(
-    db_session: SessionDep, series_list_id: int, series_list_in: SeriesListUpdate
+    db_session: SessionDep,
+    series_list_id: int,
+    series_list_in: SeriesListUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
@@ -57,7 +67,9 @@ async def update_series_list(
 
 
 @router.delete("/{series_list_id}", response_model=None)
-async def delete_series_list(db_session: SessionDep, series_list_id: int):
+async def delete_series_list(
+    db_session: SessionDep, series_list_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a series list."""
     series_list = await get(db_session=db_session, series_list_id=series_list_id)
     if not series_list:

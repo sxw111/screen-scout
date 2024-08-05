@@ -6,6 +6,9 @@ from screenscout.database.core import SessionDep
 from .models import SeriesCreate, SeriesRead, SeriesUpdate
 from .service import create, delete, get, get_all, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
@@ -51,7 +54,11 @@ async def get_series(db_session: SessionDep, series_id: int):
 
 
 @router.post("/", response_model=SeriesRead)
-async def create_series(db_session: SessionDep, series_in: SeriesCreate):
+async def create_series(
+    db_session: SessionDep,
+    series_in: SeriesCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new series."""
     series = await create(db_session=db_session, series_in=series_in)
 
@@ -60,7 +67,10 @@ async def create_series(db_session: SessionDep, series_in: SeriesCreate):
 
 @router.put("/{series_id}", response_model=SeriesRead)
 async def update_series(
-    db_session: SessionDep, series_id: int, series_in: SeriesUpdate
+    db_session: SessionDep,
+    series_id: int,
+    series_in: SeriesUpdate,
+    current_user: User = OwnerAdminManager,
 ):
     """Update a series."""
     series = await get(db_session=db_session, series_id=series_id)
@@ -76,7 +86,9 @@ async def update_series(
 
 
 @router.delete("/{series_id}", response_model=None)
-async def delete_series(db_session: SessionDep, series_id: int):
+async def delete_series(
+    db_session: SessionDep, series_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a series."""
     series = await get(db_session=db_session, series_id=series_id)
     if not series:

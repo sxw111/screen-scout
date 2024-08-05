@@ -7,6 +7,9 @@ from screenscout.exceptions import EntityDoesNotExist
 from .models import MovieCreate, MovieRead, MovieUpdate
 from .service import create, delete, get, get_all, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
@@ -52,7 +55,11 @@ async def get_movie(db_session: SessionDep, movie_id: int):
 
 
 @router.post("/", response_model=MovieRead)
-async def create_movie(db_session: SessionDep, movie_in: MovieCreate):
+async def create_movie(
+    db_session: SessionDep,
+    movie_in: MovieCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new movie."""
     try:
         movie = await create(db_session=db_session, movie_in=movie_in)
@@ -66,7 +73,12 @@ async def create_movie(db_session: SessionDep, movie_in: MovieCreate):
 
 
 @router.put("/{movie_id}", response_model=MovieRead)
-async def update_movie(db_session: SessionDep, movie_id: int, movie_in: MovieUpdate):
+async def update_movie(
+    db_session: SessionDep,
+    movie_id: int,
+    movie_in: MovieUpdate,
+    current_user: User = OwnerAdminManager,
+):
     """Update a movie."""
     movie = await get(db_session=db_session, movie_id=movie_id)
     if not movie:
@@ -81,7 +93,9 @@ async def update_movie(db_session: SessionDep, movie_id: int, movie_in: MovieUpd
 
 
 @router.delete("/{movie_id}", response_model=None)
-async def delete_movie(db_session: SessionDep, movie_id: int):
+async def delete_movie(
+    db_session: SessionDep, movie_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a movie."""
     movie = await get(db_session=db_session, movie_id=movie_id)
     if not movie:

@@ -4,18 +4,23 @@ from screenscout.database.core import SessionDep
 from .models import GenreCreate, GenreRead, GenreUpdate
 from .service import create, delete, get, get_all, get_by_name, update
 
+from screenscout.auth.permissions import OwnerAdminManager
+from screenscout.auth.models import User
+
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[GenreRead])
-async def get_genres(db_session: SessionDep):
+async def get_genres(db_session: SessionDep, current_user: User = OwnerAdminManager):
     """Return all genres in the database."""
     return await get_all(db_session=db_session)
 
 
 @router.get("/{genre_id}", response_model=GenreRead)
-async def get_genre(db_session: SessionDep, genre_id: int):
+async def get_genre(
+    db_session: SessionDep, genre_id: int, current_user: User = OwnerAdminManager
+):
     """Retrieve information about a genre by its ID."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:
@@ -28,7 +33,11 @@ async def get_genre(db_session: SessionDep, genre_id: int):
 
 
 @router.post("/", response_model=GenreRead)
-async def create_genre(db_session: SessionDep, genre_in: GenreCreate):
+async def create_genre(
+    db_session: SessionDep,
+    genre_in: GenreCreate,
+    current_user: User = OwnerAdminManager,
+):
     """Create a new genre."""
     genre = await get_by_name(db_session=db_session, name=genre_in.name)
     if genre:
@@ -43,7 +52,12 @@ async def create_genre(db_session: SessionDep, genre_in: GenreCreate):
 
 
 @router.put("/{genre_id}", response_model=GenreRead)
-async def update_genre(db_session: SessionDep, genre_id: int, genre_in: GenreUpdate):
+async def update_genre(
+    db_session: SessionDep,
+    genre_id: int,
+    genre_in: GenreUpdate,
+    current_user: User = OwnerAdminManager,
+):
     """Update a genre."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:
@@ -57,7 +71,9 @@ async def update_genre(db_session: SessionDep, genre_id: int, genre_in: GenreUpd
 
 
 @router.delete("/{genre_id}", response_model=None)
-async def delete_genre(db_session: SessionDep, genre_id: int):
+async def delete_genre(
+    db_session: SessionDep, genre_id: int, current_user: User = OwnerAdminManager
+):
     """Delete a genre."""
     genre = await get(db_session=db_session, genre_id=genre_id)
     if not genre:
