@@ -2,6 +2,7 @@ from datetime import date
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, status
+from fastapi_cache.decorator import cache
 
 from screenscout.auth.models import User
 from screenscout.auth.permissions import OwnerAdminManager
@@ -14,6 +15,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[SeriesRead])
+@cache(expire=300)
 async def get_all_series(
     db_session: SessionDep,
     title: str | None = None,
@@ -41,6 +43,7 @@ async def get_all_series(
 
 
 @router.get("/{series_id}", response_model=SeriesRead)
+@cache(expire=300)
 async def get_series(db_session: SessionDep, series_id: int) -> Any:
     """Retrieve information about a series by its ID."""
     series = await get(db_session=db_session, series_id=series_id)

@@ -15,6 +15,7 @@ passlib = {version = "^1.7.4", extras = ["bcrypt"]}
 python-jose = {version = "^3.3.0", extras = ["cryptography"]}
 asyncpg = "^0.29.0"
 asgi-lifespan = "^2.1.0"
+fastapi-cache2 = {version = "^0.2.2", extras = ["redis"]}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

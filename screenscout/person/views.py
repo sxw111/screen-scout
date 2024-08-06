@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi_cache.decorator import cache
 
 from screenscout.auth.models import User
 from screenscout.auth.permissions import OwnerAdminManager
@@ -13,12 +14,14 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[PersonRead])
+@cache(expire=300)
 async def get_persons(db_session: SessionDep) -> Any:
     """Return all persons in the database."""
     return await get_all(db_session=db_session)
 
 
 @router.get("/{person_id}", response_model=PersonRead)
+@cache(expire=300)
 async def get_person(db_session: SessionDep, person_id: int) -> Any:
     """Retrieve information about a person by its ID."""
     person = await get(db_session=db_session, person_id=person_id)

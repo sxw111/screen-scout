@@ -2,6 +2,7 @@ from datetime import date
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, status
+from fastapi_cache.decorator import cache
 
 from screenscout.auth.models import User
 from screenscout.auth.permissions import OwnerAdminManager
@@ -15,6 +16,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[MovieRead])
+@cache(expire=300)
 async def get_movies(
     db_session: SessionDep,
     title: str | None = None,
@@ -42,6 +44,7 @@ async def get_movies(
 
 
 @router.get("/{movie_id}", response_model=MovieRead)
+@cache(expire=300)
 async def get_movie(db_session: SessionDep, movie_id: int) -> Any:
     """Retrieve information about a movie by its ID."""
     movie = await get(db_session=db_session, movie_id=movie_id)

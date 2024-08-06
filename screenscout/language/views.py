@@ -1,6 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
+from fastapi_cache.decorator import cache
 
 from screenscout.auth.models import User
 from screenscout.auth.permissions import OwnerAdminManager
@@ -13,6 +14,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[LanguageRead])
+@cache(expire=3600)
 async def get_languages(
     db_session: SessionDep, current_user: User = OwnerAdminManager
 ) -> Any:
@@ -21,6 +23,7 @@ async def get_languages(
 
 
 @router.get("/{language_id}", response_model=LanguageRead)
+@cache(expire=3600)
 async def get_language(
     db_session: SessionDep, language_id: int, current_user: User = OwnerAdminManager
 ) -> Any:
