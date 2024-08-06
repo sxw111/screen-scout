@@ -1,3 +1,4 @@
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,6 +23,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
+    DATABASE_URL: PostgresDsn
 
     SECRET_KEY: str
     ALGORITHM: str

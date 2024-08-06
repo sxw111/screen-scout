@@ -9,11 +9,12 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from screenscout.auth import models
 from screenscout.career_role import models
 from screenscout.country import models
-from screenscout.database.core import DATABASE_URL, Base
+from screenscout.database.core import Base
 from screenscout.genre import models
 from screenscout.language import models
 from screenscout.movie import models
 from screenscout.person import models
+from screenscout.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -35,6 +36,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+DATABASE_URL = str(settings.DATABASE_URL)
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 config.compare_type = True
 config.compare_server_default = True
