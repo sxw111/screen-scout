@@ -1,12 +1,12 @@
 # Screen Scout
 
-Screen Scout is a web application for searching movies, TV shows, and related information about them and the people involved.
+Screen Scout is a web application for searching movies, series, and related information about them and the people involved.
 
 ## Features
 
-- Search for movies and TV shows.
-- Retrieve detailed information about movies, TV shows, and their cast and crew.
-- Save movies and TV shows to a personal watchlist.
+- Search for movies and series.
+- Retrieve detailed information about movies and series.
+- Save movies and series to a personal watchlist.
 - Utilize advanced filtering options to refine search results.
 
 ## Tech Stack
