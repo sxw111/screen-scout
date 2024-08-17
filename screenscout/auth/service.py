@@ -7,6 +7,7 @@ from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from screenscout.auth.enums import UserRole
 from screenscout.config import settings
 from screenscout.database.core import SessionDep
 from screenscout.exceptions import CredentialsException, UserDeactivatedException
@@ -117,3 +118,26 @@ async def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+async def first_owner_create(db_session: AsyncSession):
+    query = select(User).where(
+        (User.username == settings.FIRST_OWNER_USERNAME)
+        & (User.email == settings.FIRST_OWNER_EMAIL)
+    )
+    result = await db_session.execute(query)
+
+    user = result.scalars().first()
+
+    if not user:
+        hashed_password = get_password_hash(settings.FIRST_OWNER_PASSWORD)
+        user_in = User(
+            username=settings.FIRST_OWNER_USERNAME,
+            email=settings.FIRST_OWNER_EMAIL,
+            password=hashed_password,
+            role=UserRole.OWNER,
+        )
+
+        db_session.add(user_in)
+        await db_session.commit()
+        await db_session.refresh(user_in)

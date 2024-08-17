@@ -7,6 +7,9 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from starlette.middleware.cors import CORSMiddleware
 
+from screenscout.auth.service import first_owner_create
+from screenscout.database.core import get_db
+
 from .api import api_router
 from .config import settings
 
@@ -14,6 +17,9 @@ from .config import settings
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
+    async for db_session in get_db():
+        await first_owner_create(db_session)
+
     redis = aioredis.from_url("redis://localhost")
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
