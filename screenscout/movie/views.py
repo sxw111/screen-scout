@@ -57,7 +57,7 @@ async def get_movie(db_session: SessionDep, movie_id: int) -> Any:
     return movie
 
 
-@router.post("/", response_model=MovieRead)
+@router.post("/", response_model=MovieRead, status_code=status.HTTP_201_CREATED)
 async def create_movie(
     db_session: SessionDep,
     movie_in: MovieCreate,

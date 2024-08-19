@@ -38,7 +38,7 @@ async def get_language(
     return language
 
 
-@router.post("/", response_model=LanguageRead)
+@router.post("/", response_model=LanguageRead, status_code=status.HTTP_201_CREATED)
 async def create_language(
     db_session: SessionDep,
     language_in: LanguageCreate,

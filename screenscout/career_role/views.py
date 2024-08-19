@@ -38,7 +38,7 @@ async def get_career_role(
     return career_role
 
 
-@router.post("/", response_model=CareerRoleRead)
+@router.post("/", response_model=CareerRoleRead, status_code=status.HTTP_201_CREATED)
 async def create_career_role(
     db_session: SessionDep,
     career_role_in: CareerRoleCreate,

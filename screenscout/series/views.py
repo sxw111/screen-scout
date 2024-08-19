@@ -56,7 +56,7 @@ async def get_series(db_session: SessionDep, series_id: int) -> Any:
     return series
 
 
-@router.post("/", response_model=SeriesRead)
+@router.post("/", response_model=SeriesRead, status_code=status.HTTP_201_CREATED)
 async def create_series(
     db_session: SessionDep,
     series_in: SeriesCreate,

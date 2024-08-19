@@ -14,7 +14,9 @@ auth_router = APIRouter()
 users_router = APIRouter()
 
 
-@auth_router.post("/signup", response_model=UserRead)
+@auth_router.post(
+    "/signup", response_model=UserRead, status_code=status.HTTP_201_CREATED
+)
 async def signup(db_session: SessionDep, user_in: UserCreate) -> Any:
     """Creates a new user account."""
     user = await get_by_email(db_session=db_session, email=user_in.email)

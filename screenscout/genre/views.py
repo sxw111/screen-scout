@@ -38,7 +38,7 @@ async def get_genre(
     return genre
 
 
-@router.post("/", response_model=GenreRead)
+@router.post("/", response_model=GenreRead, status_code=status.HTTP_201_CREATED)
 async def create_genre(
     db_session: SessionDep,
     genre_in: GenreCreate,

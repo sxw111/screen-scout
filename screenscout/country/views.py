@@ -38,7 +38,7 @@ async def get_country(
     return country
 
 
-@router.post("/", response_model=CountryRead)
+@router.post("/", response_model=CountryRead, status_code=status.HTTP_201_CREATED)
 async def create_country(
     db_session: SessionDep,
     country_in: CountryCreate,

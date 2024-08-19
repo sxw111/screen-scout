@@ -36,7 +36,7 @@ async def get_movie_list(db_session: SessionDep, movie_list_id: int) -> Any:
     return movie_list
 
 
-@router.post("/", response_model=MovieListRead)
+@router.post("/", response_model=MovieListRead, status_code=status.HTTP_201_CREATED)
 async def create_movie_list(
     db_session: SessionDep,
     movie_list_in: MovieListCreate,

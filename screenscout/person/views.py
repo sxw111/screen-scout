@@ -34,7 +34,7 @@ async def get_person(db_session: SessionDep, person_id: int) -> Any:
     return person
 
 
-@router.post("/", response_model=PersonRead)
+@router.post("/", response_model=PersonRead, status_code=status.HTTP_201_CREATED)
 async def create_person(
     db_session: SessionDep,
     person_in: PersonCreate,
